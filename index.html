@@ -439,7 +439,7 @@ const applyVis=o=>{o.root.visible=isVis(o)};
 const captureBase=o=>{o.base={p:o.root.position.toArray(),q:o.root.quaternion.toArray(),s:o.root.scale.toArray()}};
 const restoreBase=o=>{const b=o.base;if(!b)return;o.root.position.fromArray(b.p);o.root.quaternion.fromArray(b.q);o.root.scale.fromArray(b.s)};
 
-/* ---------- IndexedDB / Хранилище ---------- */
+/* ---------- Хранилище IndexedDB ---------- */
 let _db=null;const mem=new Map();
 function dbo(){if(!_db)_db=new Promise((res,rej)=>{try{const r=indexedDB.open('bliss-projects',1);r.onupgradeneeded=()=>r.result.createObjectStore('p',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}});return _db}
 const tx=(db,mode)=>db.transaction('p',mode).objectStore('p');
@@ -449,7 +449,7 @@ async function dbGet(id){try{return await rq(tx(await dbo(),'readonly').get(id))
 async function dbPut(rec){try{await rq(tx(await dbo(),'readwrite').put(rec))}catch(e){mem.set(rec.id,rec)}}
 async function dbDel(id){try{await rq(tx(await dbo(),'readwrite').delete(id))}catch(e){mem.delete(id)}}
 
-/* ---------- Диалоги, всплывающие меню ---------- */
+/* ---------- Диалоги и меню ---------- */
 function dlg({title,text='',input,ok='ОК',cancel='Отмена'}){
   return new Promise(res=>{
     const sc=$('#scrim'),di=$('#dI');
@@ -469,7 +469,7 @@ async function showSettings(){
   const pxVal = state.pixels;
   const res = await dlg({
     title: 'Настройки проекта',
-    text: `Режим Minecraft (воксельный сетка): ${mcState}\nПлотность сетки: ${pxVal} пикселей на блок\n\nХотите изменить режим вокселей для текущего проекта?`,
+    text: `Режим Minecraft (воксельная сетка): ${mcState}\nПлотность сетки: ${pxVal} пикселей на блок\n\nХотите изменить режим вокселей для текущего проекта?`,
     ok: 'Изменить',
     cancel: 'Закрыть'
   });
@@ -510,17 +510,14 @@ async function renderHome(){
   $('#projCount').textContent=list.length?String(list.length):'';
   const g=$('#projGrid');
   if(!list.length){g.innerHTML='<div class="empty-home">Пока нет проектов. Создайте первый.</div>';return}
-  g.innerHTML=list.map(p=>`<div class="pcard" data-id="${p.id}"><div class="pth">${p.thumb?`<img src="${p.thumb}" alt="">`:ic('cube',36)}</div><div class="pmeta"><div><b>${esc(p.name)}</b><small>${new Date(p.updated).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></div><button class="ib sm" data-del="${p.id}" title="Удалить">${ic('trash',18)}</button></div></div>`).join('');
+  g.innerHTML=list.map(p=>`<pcard class="pcard" data-id="${p.id}"><div class="pth">${p.thumb?`<img src="${p.thumb}" alt="">`:ic('cube',36)}</div><div class="pmeta"><div><b>${esc(p.name)}</b><small>${new Date(p.updated).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></div><button class="ib sm" data-del="${p.id}" title="Удалить">${ic('trash',18)}</button></div></pcard>`).join('');
 }
 function showHome(){editorOn=false;closePop();$('#editor').classList.add('hidden');$('#home').classList.remove('hidden');renderHome()}
 function showEditor(){
   $('#home').classList.add('hidden');
   $('#editor').classList.remove('hidden');
   editorOn=true;
-  if(!inited){
-    initThree();
-    inited=true;
-  }
+  if(!inited){initThree();inited=true;}
   setNW();
   setTimeout(resize, 40);
 }
@@ -544,7 +541,7 @@ function resetScene(){
   orbit.target.set(0,.8,0);cam.position.set(6,4.5,8);updateAnimBtn();
 }
 
-/* ---------- 3D сцена и воксели в стиле Blockbench ---------- */
+/* ---------- 3D Сцена ---------- */
 function initThree(){
   const cv=$('#cv'),vp=$('#viewport');
   R=new THREE.WebGLRenderer({canvas:cv,antialias:true});
@@ -679,7 +676,7 @@ function setNW(){NW=innerWidth<=820?104:152;document.documentElement.style.setPr
 function setMode(m){state.mode=m;tc.setMode(m);$$('#rail [data-m]').forEach(x=>x.classList.toggle('on',x.dataset.m===m))}
 function updateWorkMode(mode){state.work=mode;$$('#modebar [data-work]').forEach(b=>b.classList.toggle('on',b.dataset.work===mode));$('#tl').classList.toggle('hidden',mode!=='animation');$('#tiles').parentElement.classList.toggle('hidden',mode==='paint');$('#paintColor').classList.toggle('hidden',mode!=='paint');$('#rail').classList.toggle('hidden',mode!=='model');if(mode==='paint')toast('Нажмите на объект для покраски');}
 
-/* ---------- Создание объектов и вокселей Minecraft ---------- */
+/* ---------- Работа с объектами и вокселями ---------- */
 function makeObj(root,name,kind){
   root.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});
   const o={uid:++uidc,name,kind,root,tracks:{},keys:null,vis:true,folder:null,base:null};
@@ -714,7 +711,7 @@ function attachObject(o,parent){
   if(o===parent||isDescendant(parent,o)){toast('Нельзя создать цикл в иерархии');return}
   parent.root.attach(o.root);o.parentUid=parent.uid;renderObjs();markDirty();toast('Прикреплено к '+parent.name);
 }
-function detachObject(o){if(!o.root.parent||o.root.parent===world){toast('Объект уже самостоятельный');return}world.attach(o.root);o.parentUid=null;renderObjs();markDirty();toast('Отсодинено')}
+function detachObject(o){if(!o.root.parent||o.root.parent===world){toast('Объект уже самостоятельный');return}world.attach(o.root);o.parentUid=null;renderObjs();markDirty();toast('Отсоединено')}
 function removeObj(o){
   if(state.sel===o)select(null);
   state.objs.filter(x=>x.root.parent===o.root).forEach(x=>{world.attach(x.root);x.parentUid=null});
@@ -788,7 +785,7 @@ function folderItems(f){
   return it;
 }
 
-/* ---------- Анимации и таймлайн ---------- */
+/* ---------- Таймлайн ---------- */
 const _q1=new THREE.Quaternion(),_q2=new THREE.Quaternion();
 function sample(K,f){
   let a,b,t=0;
@@ -929,7 +926,7 @@ function refreshFields(force){
   });
 }
 
-/* ---------- Таймлайн ---------- */
+/* ---------- Рендер таймлайна ---------- */
 function renderTL(){
   const W=PAD*2+state.end*state.ppf,pp=state.ppf;
   const steps=[1,2,5,10,20,50,100,200];const step=steps.find(s=>s*pp>=46)||500;
@@ -1127,7 +1124,7 @@ async function saveProject(silent){
 }
 function markDirty(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>saveProject(true),2000)}
 
-/* ---------- События интерфейса ---------- */
+/* ---------- Обработчики интерфейса ---------- */
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(b)b.blur();
   if(!e.target.closest('.mw'))$('#fileMenu').classList.add('hidden');
@@ -1176,7 +1173,7 @@ function renderTiles(){
 renderTiles();
 $('#tiles').onclick=e=>{const b=e.target.closest('[data-k]');if(b)addShape(b.dataset.k)};
 
-/* Оутлайнер события */
+/* Оутлайнер */
 const ob=$('#objs');
 ob.onclick=e=>{
   const eye=e.target.closest('[data-eye]');
