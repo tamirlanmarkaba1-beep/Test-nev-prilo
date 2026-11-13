@@ -489,7 +489,17 @@ async function renderHome(){
   g.innerHTML=list.map(p=>`<div class="pcard" data-id="${p.id}"><div class="pth">${p.thumb?`<img src="${p.thumb}" alt="">`:ic('cube',36)}</div><div class="pmeta"><div><b>${esc(p.name)}</b><small>${new Date(p.updated).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></div><button class="ib sm" data-del="${p.id}" title="Удалить">${ic('trash',18)}</button></div></div>`).join('');
 }
 function showHome(){editorOn=false;closePop();$('#editor').classList.add('hidden');$('#home').classList.remove('hidden');renderHome()}
-function showEditor(){$('#home').classList.add('hidden');$('#editor').classList.remove('hidden');editorOn=true;if(!inited){initThree();inited=true}setNW();resize()}
+function showEditor(){
+  $('#home').classList.add('hidden');
+  $('#editor').classList.remove('hidden');
+  editorOn=true;
+  if(!inited){
+    initThree();
+    inited=true;
+  }
+  setNW();
+  setTimeout(resize, 40);
+}
 async function createProject(name,mc=false,pixels=16){
   const rec={id:'p'+Date.now().toString(36),name,updated:Date.now(),thumb:'',glb:null,mc,pixels};
   await dbPut(rec);await openProject(rec);state.mc=mc;state.pixels=pixels;updateWorkMode('model');renderTiles();renderAll();return rec;
@@ -592,7 +602,7 @@ function initThree(){
     }else if(state.mode==='rotate'){
       const axis=new THREE.Vector3(ax==='x'?1:0,(ax==='free'||ax==='y')?1:0,ax==='z'?1:0);
       let ang=(ax==='x'?dy:dx)*.012;
-      if(state.mc)ang=Math.round(ang/(Math.PI/8))*(Math.PI/8); // Квантование углов по 22.5° как в Blockbench
+      if(state.mc)ang=Math.round(ang/(Math.PI/8))*(Math.PI/8);
       root.quaternion.copy(dd.q0).premultiply(new THREE.Quaternion().setFromAxisAngle(axis,ang));
     }else{
       const f=Math.exp(-dy*.006);
@@ -634,8 +644,12 @@ function initThree(){
   })(last);
 }
 function resize(){
-  if(!R)return;const vp=$('#viewport'),w=vp.clientWidth,h=vp.clientHeight;if(!w||!h)return;
-  R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
+  if(!R)return;
+  const vp=$('#viewport'),w=vp.clientWidth||window.innerWidth,h=vp.clientHeight||window.innerHeight;
+  if(!w||!h)return;
+  R.setSize(w,h,false);
+  cam.aspect=w/h;
+  cam.updateProjectionMatrix();
 }
 function setNW(){NW=innerWidth<=820?104:152;document.documentElement.style.setProperty('--nw',NW+'px')}
 function setMode(m){state.mode=m;tc.setMode(m);$$('#rail [data-m]').forEach(x=>x.classList.toggle('on',x.dataset.m===m))}
@@ -653,7 +667,7 @@ function addShape(kind){
   let geom;
   if(state.mc||kind==='block'){
     const step=1/state.pixels;
-    geom=new THREE.BoxGeometry(step*16,step*16,step*16); // Воксельный куб размером с полноценный пиксельный блок
+    geom=new THREE.BoxGeometry(step*16,step*16,step*16);
   }else{
     const G={cube:()=>new THREE.BoxGeometry(1,1,1),sphere:()=>new THREE.SphereGeometry(.6,48,32),cylinder:()=>new THREE.CylinderGeometry(.5,.5,1.2,48),cone:()=>new THREE.ConeGeometry(.6,1.2,48),torus:()=>new THREE.TorusGeometry(.5,.2,24,64),plane:()=>new THREE.PlaneGeometry(1.8,1.8)};
     geom=G[kind]();
@@ -662,7 +676,6 @@ function addShape(kind){
   const n=state.objs.filter(o=>o.kind===kind).length+1,c=state.objs.length;
   const lift=state.mc?0.5:{cube:.5,block:.5,sphere:.6,cylinder:.6,cone:.6,torus:.7,plane:.01}[kind];
   if(state.mc){
-    const step=1/state.pixels;
     m.position.set(0,lift,0);
   }else{
     m.position.set(((c%5)-2)*1.5,lift,0);
@@ -1063,7 +1076,7 @@ async function exportFile(){
   try{
     const buf=await exportGLB();
     const url=URL.createObjectURL(new Blob([buf],{type:'model/gltf-binary'}));
-    const a=document.createElement('a');a.href=url;a.download=(state.name||'bliss').replace(/[\\/:*?"<>|]/g,'_')+'.glb';
+    const a=document.createElement('a');a.href=url;a.download=(state.name||'bliss').replace(/[\/:*?"<>|]/g,'_')+'.glb';
     document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
     toast('Экспортировано');
   }catch(e){toast('Ошибка экспорта')}
