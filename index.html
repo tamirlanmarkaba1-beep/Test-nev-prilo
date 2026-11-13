@@ -3,21 +3,32 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Bliss Studio</title>
-<meta name="color-scheme" content="dark">
+<title>Bliss 3D Studio</title>
+<meta name="color-scheme" content="dark light">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  color-scheme:dark;
   --bg:#080d0d; --s1:#101817; --s2:#161f1e; --s3:#1d2827; --s4:#253332;
   --ol:#3b4c4a; --olv:#273533;
   --tx:#dce5e3; --tx2:#a4b5b2; --tx3:#6f807d;
   --pr:#5fc7b9; --onpr:#00201c; --prc:#0e4b45; --onprc:#a7f0e6;
   --sc:#26403d; --onsc:#c5e8e3; --soft:#8fc4bd; --er:#eba8a0;
   --r-s:12px; --r-m:16px; --r-l:20px; --r-xl:28px;
-  --nw:152px; --tlh:232px;
+  --nw:152px; --tlh:210px;
+  --anim-speed:0.2s;
+}
+:root.light{
+  --bg:#f2f6f5; --s1:#ffffff; --s2:#e6edec; --s3:#d8e2e0; --s4:#c6d4d1;
+  --ol:#b0c2bf; --olv:#d0dedc;
+  --tx:#111c1a; --tx2:#40524f; --tx3:#70827f;
+  --pr:#0f9f8f; --onpr:#ffffff; --prc:#c5f2ec; --onprc:#003830;
+  --sc:#d0ebe6; --onsc:#08332d; --soft:#1a8c7e; --er:#d9534f;
+}
+body.no-anim *, body.no-anim *::before, body.no-anim *::after {
+  transition: none !important;
+  animation: none !important;
 }
 *{box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--ol) transparent;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font-family:'Nunito',system-ui,sans-serif;overflow:hidden;overscroll-behavior:none}
@@ -29,19 +40,19 @@ button,input,select{font-family:inherit;touch-action:manipulation}
 .screen{position:absolute;inset:0}
 
 /* buttons */
-.btn{height:40px;padding:0 20px;border-radius:999px;border:0;font:700 14px 'Nunito',sans-serif;display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:var(--tx);background:transparent;white-space:nowrap;transition:filter .15s,background .15s}
+.btn{height:40px;padding:0 20px;border-radius:999px;border:0;font:700 14px 'Nunito',sans-serif;display:inline-flex;align-items:center;gap:8px;cursor:pointer;color:var(--tx);background:transparent;white-space:nowrap;transition:filter var(--anim-speed),background var(--anim-speed),transform var(--anim-speed)}
 .btn.fill{background:var(--pr);color:var(--onpr)}
 .btn.tonal{background:var(--sc);color:var(--onsc)}
 .btn.text{color:var(--pr);padding:0 14px}
 .btn.sm{height:36px;padding:0 14px}
 .btn.danger{color:var(--er)}
-.btn:hover{filter:brightness(1.12)}
+.btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
 .btn.text:hover{background:rgba(95,199,185,.1);filter:none}
-.ib{width:40px;height:40px;border-radius:50%;border:0;background:transparent;color:var(--tx2);display:grid;place-items:center;cursor:pointer;flex:none;transition:background .15s}
-.ib:hover{background:rgba(220,229,227,.08)}
+.ib{width:40px;height:40px;border-radius:50%;border:0;background:transparent;color:var(--tx2);display:grid;place-items:center;cursor:pointer;flex:none;transition:background var(--anim-speed),transform var(--anim-speed)}
+.ib:hover{background:rgba(220,229,227,.12);transform:scale(1.05)}
 .ib.on{background:var(--prc);color:var(--onprc)}
 .ib.sm{width:34px;height:34px}
-.chip{height:36px;padding:0 14px;border-radius:10px;border:1px solid var(--ol);background:transparent;color:var(--tx2);font:700 13px 'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;flex:none}
+.chip{height:36px;padding:0 14px;border-radius:10px;border:1px solid var(--ol);background:transparent;color:var(--tx2);font:700 13px 'Nunito',sans-serif;display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;flex:none;transition:all var(--anim-speed)}
 .chip.on{background:var(--sc);color:var(--onsc);border-color:transparent}
 
 /* fields */
@@ -55,13 +66,15 @@ input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-
 .deco{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .deco svg{position:absolute}
 .home-in{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:28px 24px 72px}
-.brand{display:flex;align-items:center;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.brand-left{display:flex;align-items:center;gap:12px}
 .brand-t{font-weight:800;font-size:28px;letter-spacing:-.02em}
 .brand svg.logo{width:44px;height:44px}
-h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacing:-.03em;margin:44px 0 14px}
-.lead{max-width:520px;color:var(--tx2);font-size:17px;line-height:1.5;margin:0 0 32px;font-weight:600}
+.home-actions-top{display:flex;gap:10px;align-items:center}
+h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacing:-.03em;margin:36px 0 14px}
+.lead{max-width:520px;color:var(--tx2);font-size:17px;line-height:1.5;margin:0 0 28px;font-weight:600}
 .acts{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px}
-.act{border:0;border-radius:var(--r-xl);padding:22px;display:flex;gap:16px;align-items:center;text-align:left;cursor:pointer;font-family:inherit;transition:transform .15s,filter .15s}
+.act{border:0;border-radius:var(--r-xl);padding:22px;display:flex;gap:16px;align-items:center;text-align:left;cursor:pointer;font-family:inherit;transition:transform var(--anim-speed),filter var(--anim-speed)}
 .act:hover{filter:brightness(1.1);transform:translateY(-2px)}
 .act b{display:block;font-size:18px;font-weight:800}
 .act small{display:block;margin-top:2px;font-size:13px;font-weight:600;opacity:.8}
@@ -72,11 +85,11 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacin
 .bubble .ic{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
 .act.a .bubble{color:var(--onpr)} .act.a .bubble .bg path{fill:var(--pr)}
 .act.b .bubble{color:#0d2421} .act.b .bubble .bg path{fill:var(--soft)}
-.sec{display:flex;align-items:baseline;gap:12px;margin:48px 0 16px}
+.sec{display:flex;align-items:baseline;gap:12px;margin:40px 0 16px}
 .sec h2{margin:0;font-size:22px;font-weight:800}
 .sec span{color:var(--tx3);font-weight:700;font-size:14px}
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
-.pcard{background:var(--s2);border-radius:var(--r-xl);padding:10px 10px 8px;cursor:pointer;transition:background .15s,transform .15s}
+.pcard{background:var(--s2);border-radius:var(--r-xl);padding:10px 10px 8px;cursor:pointer;transition:background var(--anim-speed),transform var(--anim-speed);box-shadow:0 4px 12px rgba(0,0,0,.05)}
 .pcard:hover{background:var(--s3);transform:translateY(-2px)}
 .pth{aspect-ratio:16/10;border-radius:var(--r-l);background:var(--s1);overflow:hidden;display:grid;place-items:center;color:var(--tx3)}
 .pth img{width:100%;height:100%;object-fit:cover;display:block}
@@ -85,169 +98,183 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacin
 .pmeta b{display:block;font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pmeta small{color:var(--tx3);font-weight:600;font-size:12px}
 .empty-home{border:2px dashed var(--olv);border-radius:var(--r-xl);padding:40px 20px;text-align:center;color:var(--tx3);font-weight:700;grid-column:1/-1}
+.home-footer-note{margin-top:48px;padding:20px;background:var(--s2);border-radius:var(--r-l);text-align:center;color:var(--tx2);font-weight:700;font-size:14px;border:1px solid var(--olv)}
 
 /* editor layout */
 #editor{display:grid;grid-template-rows:56px minmax(0,1fr) var(--tlh);grid-template-columns:minmax(0,1fr) 304px;background:var(--bg)}
-.topbar{grid-column:1/-1;display:flex;align-items:center;gap:4px;padding:0 8px;background:var(--s1);position:relative;z-index:30}
+.topbar{grid-column:1/-1;display:flex;align-items:center;gap:6px;padding:0 8px;background:var(--s1);position:relative;z-index:30;overflow-x:auto;scrollbar-width:none}
+.topbar::-webkit-scrollbar{display:none}
 .topbar svg.logo{width:30px;height:30px}
-.pname{background:transparent;border:1px solid transparent;border-radius:12px;height:40px;padding:0 12px;color:var(--tx);font:800 16px 'Nunito',sans-serif;width:min(280px,40vw);outline:0;user-select:text;-webkit-user-select:text}
+.pname{background:transparent;border:1px solid transparent;border-radius:12px;height:38px;padding:0 10px;color:var(--tx);font:800 15px 'Nunito',sans-serif;width:min(200px,30vw);outline:0;user-select:text;-webkit-user-select:text}
 .pname:hover{background:var(--s3)} .pname:focus{background:var(--s3);border-color:var(--pr)}
 .mw{position:relative}
-.menu{position:absolute;top:46px;left:0;min-width:268px;background:var(--s3);border-radius:var(--r-m);padding:8px;box-shadow:0 12px 32px rgba(0,0,0,.55)}
+.menu{position:absolute;top:46px;left:0;min-width:268px;background:var(--s3);border-radius:var(--r-m);padding:8px;box-shadow:0 12px 32px rgba(0,0,0,.35);z-index:90}
 .menu.pop{position:fixed;z-index:95;min-width:240px;max-width:90vw;max-height:70vh;overflow:auto}
-.mi{display:flex;align-items:center;gap:14px;width:100%;height:48px;border:0;background:transparent;color:var(--tx);padding:0 14px;border-radius:12px;font:700 14px 'Nunito',sans-serif;cursor:pointer;text-align:left}
-.mi:hover{background:rgba(95,199,185,.12)}
+.mi{display:flex;align-items:center;gap:14px;width:100%;height:46px;border:0;background:transparent;color:var(--tx);padding:0 14px;border-radius:12px;font:700 14px 'Nunito',sans-serif;cursor:pointer;text-align:left;transition:background var(--anim-speed)}
+.mi:hover{background:rgba(95,199,185,.15)}
 .mi:disabled{opacity:.4;pointer-events:none}
 .mi.dg,.mi.dg .ic{color:var(--er)}
 .mi small{margin-left:auto;color:var(--tx3);font-weight:600;font-size:12px;display:flex}
 .mi .ic{color:var(--pr)}
 .mi span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .menu .div{height:1px;background:var(--olv);margin:6px 8px}
+
 #viewport{position:relative;min-width:0;min-height:0;overflow:hidden;background:#0a1110}
 #cv{display:block;width:100%;height:100%;outline:0;touch-action:none}
 .vp-fab{position:absolute;left:12px;top:12px;background:rgba(29,40,39,.92)!important;color:var(--tx)}
 .vp-hint{position:absolute;left:12px;bottom:12px;background:rgba(16,24,23,.85);color:var(--tx2);font-weight:700;font-size:12px;padding:8px 14px;border-radius:999px;pointer-events:none}
+
 .rail{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:4px;padding:6px;background:rgba(16,24,23,.93);border-radius:26px;max-height:calc(100% - 20px);overflow:auto;scrollbar-width:none;z-index:5;box-shadow:0 6px 20px rgba(0,0,0,.4)}
 .rail::-webkit-scrollbar{display:none}
-.rail button{width:58px;height:58px;border-radius:18px;border:0;background:transparent;color:var(--tx2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:700 10px 'Nunito',sans-serif;cursor:pointer;flex:none}
-.rail button:hover{background:rgba(220,229,227,.07)}
+.rail button{width:54px;height:54px;border-radius:18px;border:0;background:transparent;color:var(--tx2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font:700 10px 'Nunito',sans-serif;cursor:pointer;flex:none;transition:background var(--anim-speed)}
+.rail button:hover{background:rgba(220,229,227,.1)}
 .rail button.on{background:var(--prc);color:var(--onprc)}
 .rail button.act{background:var(--sc);color:var(--onsc)}
 .rail .sp{height:1px;background:var(--olv);margin:2px 10px;flex:none}
+
 .axis{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:center;gap:2px;background:rgba(16,24,23,.93);padding:4px;border-radius:999px;z-index:5}
 .axis span{font:700 11px 'Nunito',sans-serif;color:var(--tx3);padding:0 6px 0 12px}
-.axis button{height:36px;min-width:46px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:var(--tx2);font:800 13px 'Nunito',sans-serif;cursor:pointer}
+.axis button{height:34px;min-width:42px;padding:0 8px;border:0;border-radius:999px;background:transparent;color:var(--tx2);font:800 12px 'Nunito',sans-serif;cursor:pointer}
 .axis button.on{background:var(--sc);color:var(--onsc)}
+
 #side{background:var(--s1);overflow:auto;padding:12px 12px 4px;min-height:0}
 .card{background:var(--s2);border-radius:var(--r-l);padding:14px;margin-bottom:12px}
 .ct{font-weight:800;font-size:14px;color:var(--tx2);margin:0 0 12px 2px}
 .ctrow{display:flex;align-items:center;justify-content:space-between;margin:-6px -6px 6px 2px}
 .ctrow .ct{margin:0}
 .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.tile{border:0;border-radius:var(--r-m);background:var(--s3);color:var(--tx);height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 12px 'Nunito',sans-serif;cursor:pointer;transition:background .15s}
+.tile{border:0;border-radius:var(--r-m);background:var(--s3);color:var(--tx);height:68px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font:700 12px 'Nunito',sans-serif;cursor:pointer;transition:background var(--anim-speed)}
 .tile:hover{background:var(--sc);color:var(--onsc)}
 .tile .ic{color:var(--pr)}
-#objs{display:flex;flex-direction:column;gap:2px;max-height:300px;overflow:auto}
-.orow{display:flex;align-items:center;gap:8px;height:44px;padding:0 2px 0 12px;border-radius:14px;cursor:pointer;color:var(--tx);flex:none}
-.orow:hover{background:rgba(220,229,227,.06)}
+
+#objs{display:flex;flex-direction:column;gap:2px;max-height:280px;overflow:auto}
+.orow{display:flex;align-items:center;gap:8px;height:42px;padding:0 2px 0 10px;border-radius:12px;cursor:pointer;color:var(--tx);flex:none}
+.orow:hover{background:rgba(220,229,227,.08)}
 .orow.sel{background:var(--prc);color:var(--onprc)}
-.orow.ind{margin-left:22px}
+.orow.ind{margin-left:18px}
 .orow.fd{background:var(--s3);font-weight:800;padding-left:6px}
-.orow.over{outline:2px solid var(--pr);outline-offset:-2px}
-.orow .on{flex:1;min-width:0;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.orow .on{flex:1;min-width:0;font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .orow.fd .on{font-weight:800}
 .orow>.ic{color:var(--soft)}
 .orow.sel>.ic{color:var(--onprc)}
-.orow .ib{color:inherit;opacity:.8}
 .cnt{color:var(--tx3);font-size:12px;font-weight:700}
-.chev{display:grid;place-items:center;width:24px;flex:none;transition:transform .15s;color:var(--tx2)}
-.orow.open .chev,.row.open .chev{transform:rotate(90deg)}
-.rootdrop{display:none;align-items:center;justify-content:center;height:40px;border:2px dashed var(--ol);border-radius:14px;color:var(--tx3);font-weight:700;font-size:12px;margin-top:4px}
-#objs.dragging .rootdrop{display:flex}
+.chev{display:grid;place-items:center;width:20px;flex:none;transition:transform var(--anim-speed);color:var(--tx2)}
+.orow.open .chev{transform:rotate(90deg)}
 .hint{color:var(--tx3);font-weight:600;font-size:13px;padding:6px 4px;line-height:1.4}
-.fh,.frow{display:grid;grid-template-columns:58px repeat(3,minmax(0,1fr));gap:6px;align-items:center}
-.fh{margin:12px 0 4px}
+.fh,.frow{display:grid;grid-template-columns:54px repeat(3,minmax(0,1fr));gap:6px;align-items:center}
+.fh{margin:10px 0 4px}
 .fh i{font-style:normal;text-align:center;font-weight:800;font-size:11px;color:var(--c)}
 .frow{margin-bottom:6px}
 .frow span{font-weight:700;font-size:12px;color:var(--tx2)}
-.frow input{height:36px;border-radius:10px;border:1px solid transparent;background:var(--s3);color:var(--tx);text-align:center;font:700 12px 'Nunito',sans-serif;outline:0;width:100%;min-width:0;padding:0 2px;user-select:text;-webkit-user-select:text}
-.frow input:focus{border-color:var(--pr)}
-.sw{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
-.sw button{width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;background:var(--c);outline:2px solid transparent;outline-offset:2px}
+.frow input{height:34px;border-radius:9px;border:1px solid transparent;background:var(--s3);color:var(--tx);text-align:center;font:700 12px 'Nunito',sans-serif;outline:0;width:100%;min-width:0;padding:0 2px;user-select:text;-webkit-user-select:text}
+.sw{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.sw button{width:28px;height:28px;border-radius:50%;border:0;cursor:pointer;background:var(--c);outline:2px solid transparent;outline-offset:2px}
 .sw button.on{outline-color:var(--pr)}
-.pact{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
-.pact .btn{flex:1;justify-content:center;padding:0 10px}
+.pact{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.pact .btn{flex:1;justify-content:center;padding:0 8px;font-size:13px;height:36px}
 
-/* режимы редактора */
-.modebar{display:flex;align-items:center;gap:3px;margin-left:6px;background:var(--s2);padding:4px;border-radius:999px}
-.modebar button{height:34px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:var(--tx2);font:800 12px 'Nunito',sans-serif;cursor:pointer;white-space:nowrap}
+/* Режимы редактора в шапке */
+.modebar{display:flex;align-items:center;gap:2px;background:var(--s2);padding:3px;border-radius:999px;flex:none}
+.modebar button{height:32px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:var(--tx2);font:800 12px 'Nunito',sans-serif;cursor:pointer;white-space:nowrap;transition:all var(--anim-speed)}
 .modebar button.on{background:var(--prc);color:var(--onprc)}
-#paintColor{width:34px;height:34px;border:0;border-radius:50%;background:none;padding:2px;cursor:pointer}
-.mc-note{color:var(--pr);font-size:12px;font-weight:800;padding:8px 4px}
-@media(max-width:820px){.modebar{margin-left:0}.modebar button{padding:0 7px;font-size:10px}.topbar{gap:1px;padding:0 3px}.pname{width:20vw}}
-/* timeline */
-#tl{grid-column:1/-1;background:var(--s1);display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--olv)}
+.mc-note{color:var(--pr);font-size:12px;font-weight:800;padding:8px 4px;text-align:center}
+
+/* НИЖНЯЯ ПАНЕЛЬ (общая для таймлайна, аутлайнера моделирования и палитры раскраски) */
+#bottomPanel{grid-column:1/-1;background:var(--s1);display:flex;flex-direction:column;min-height:0;border-top:1px solid var(--olv);position:relative}
+
+/* 1. Анимация (Таймлайн) */
+#tl{display:flex;flex-direction:column;height:100%;min-height:0}
 .tl-head{display:flex;align-items:center;gap:6px;padding:6px 10px;overflow-x:auto;flex:none;scrollbar-width:none}
 .tl-head::-webkit-scrollbar{display:none}
-.tl-head .sep{width:1px;height:24px;background:var(--olv);margin:0 4px;flex:none}
-.tl-head .btn{flex:none}
-#bAnim .an{max-width:120px;overflow:hidden;text-overflow:ellipsis}
+.tl-head .sep{width:1px;height:22px;background:var(--olv);margin:0 4px;flex:none}
+#bAnim .an{max-width:110px;overflow:hidden;text-overflow:ellipsis}
 .ib.pl{background:var(--pr);color:var(--onpr)}
 .ib.pl:hover{background:var(--pr);filter:brightness(1.12)}
 .fl{display:flex;align-items:center;gap:6px;color:var(--tx2);font-weight:700;font-size:13px;white-space:nowrap;flex:none}
-.fl input{width:62px;height:36px;border-radius:10px;border:1px solid transparent;background:var(--s3);color:var(--tx);text-align:center;font:700 14px 'Nunito',sans-serif;outline:0;user-select:text;-webkit-user-select:text}
-.fl input:focus{border-color:var(--pr)}
+.fl input{width:56px;height:34px;border-radius:9px;border:1px solid transparent;background:var(--s3);color:var(--tx);text-align:center;font:700 13px 'Nunito',sans-serif;outline:0;user-select:text;-webkit-user-select:text}
 .tl-scroll{flex:1;overflow:auto;position:relative;min-height:0}
 .tl-in{position:relative;min-height:100%}
-.ruler{position:sticky;top:0;z-index:5;height:32px;display:flex;background:var(--s1);touch-action:none;cursor:pointer}
+.ruler{position:sticky;top:0;z-index:5;height:28px;display:flex;background:var(--s1);touch-action:none;cursor:pointer}
 .rn{position:sticky;left:0;z-index:8;width:var(--nw);flex:none;background:var(--s1);display:flex;align-items:center;gap:8px;padding:0 12px;font-weight:700;font-size:13px;border-right:1px solid var(--olv);cursor:pointer;overflow:hidden;color:var(--tx)}
 .rn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rn .ic{color:var(--soft);flex:none}
-.rn.ind{padding-left:26px}
 .row.fold .rn{background:var(--s3);font-weight:800;padding-left:6px;gap:4px}
 .row.fold .rt{background:var(--s2)}
-.row.fold .chev{width:20px}
-.ruler .rn{z-index:9;cursor:default}
 .rt{position:relative;flex:none}
-.tk{position:absolute;bottom:0;width:1px;height:5px;background:var(--olv)}
-.tk.m{height:12px;background:var(--ol)}
-.tkl{position:absolute;top:5px;font-weight:700;font-size:11px;color:var(--tx3);transform:translateX(4px);pointer-events:none}
-.row{display:flex;height:40px;border-bottom:1px solid var(--olv)}
+.tk{position:absolute;bottom:0;width:1px;height:4px;background:var(--olv)}
+.tk.m{height:10px;background:var(--ol)}
+.tkl{position:absolute;top:4px;font-weight:700;font-size:10px;color:var(--tx3);transform:translateX(4px);pointer-events:none}
+.row{display:flex;height:36px;border-bottom:1px solid var(--olv)}
 .row .rt{background-image:linear-gradient(90deg,var(--olv) 1px,transparent 1px)}
 .row.fold .rt{background-image:none}
 .row.sel .rn{background:var(--prc);color:var(--onprc)}
 .row.sel .rn .ic{color:var(--onprc)}
-.row.sel .rt{background-color:rgba(95,199,185,.07)}
-.key{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:4px;transform:rotate(45deg);background:var(--soft);cursor:grab;touch-action:none;transition:background .1s}
-.key::after{content:'';position:absolute;inset:-10px}
-.key:hover{background:var(--onprc)}
+.row.sel .rt{background-color:rgba(95,199,185,.08)}
+.key{position:absolute;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:3px;transform:rotate(45deg);background:var(--soft);cursor:grab;touch-action:none}
 .key.on{background:var(--pr);box-shadow:0 0 0 3px rgba(95,199,185,.3)}
 .ph{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--pr);z-index:6;pointer-events:none}
-.phh{position:sticky;top:4px;display:block;width:max-content;transform:translateX(calc(-50% + 1px));background:var(--pr);color:var(--onpr);font-weight:800;font-size:11px;padding:3px 8px;border-radius:999px}
-.tl-empty{position:sticky;left:0;padding:18px;color:var(--tx3);font-weight:600;font-size:13px;width:max-content;max-width:90vw}
+.phh{position:sticky;top:2px;display:block;width:max-content;transform:translateX(calc(-50% + 1px));background:var(--pr);color:var(--onpr);font-weight:800;font-size:10px;padding:2px 6px;border-radius:999px}
+.tl-empty{position:sticky;left:0;padding:16px;color:var(--tx3);font-weight:600;font-size:13px;width:max-content}
 
-/* dialog + toast */
-.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:grid;place-items:center;padding:20px}
-.dialog{background:var(--s3);border-radius:var(--r-xl);padding:24px;width:min(400px,100%)}
+/* 2. Низ для моделирования (Аутлайнер блоков снизу) */
+#modelBottom{display:flex;flex-direction:column;height:100%;padding:10px 16px;overflow:hidden}
+.mb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.mb-title{font-weight:800;font-size:14px;color:var(--tx2);display:flex;align-items:center;gap:8px}
+.mb-list{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
+.mb-item{background:var(--s2);border:1px solid var(--olv);border-radius:var(--r-m);padding:8px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;flex:none;transition:all var(--anim-speed)}
+.mb-item:hover{background:var(--s3);border-color:var(--pr)}
+.mb-item.sel{background:var(--prc);color:var(--onprc);border-color:var(--pr)}
+.mb-item b{font-size:13px;font-weight:800;white-space:nowrap}
+
+/* 3. Низ для раскраски (Палитра и текстуры) */
+#paintBottom{display:flex;flex-direction:column;height:100%;padding:10px 16px;gap:8px;overflow:auto}
+.pb-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pb-title{font-weight:800;font-size:13px;color:var(--tx2);min-width:90px}
+.pb-colors{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pb-color{width:32px;height:32px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform var(--anim-speed)}
+.pb-color:hover{transform:scale(1.1)}
+.pb-color.on{border-color:var(--tx);transform:scale(1.15)}
+.tex-chips{display:flex;gap:6px}
+.tex-chip{padding:6px 12px;border-radius:10px;border:1px solid var(--ol);background:var(--s2);color:var(--tx2);font:700 12px 'Nunito',sans-serif;cursor:pointer}
+.tex-chip.on{background:var(--sc);color:var(--onsc);border-color:transparent}
+
+/* dialog + toast + settings modal */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;display:grid;place-items:center;padding:20px;backdrop-filter:blur(4px)}
+.dialog{background:var(--s3);border-radius:var(--r-xl);padding:24px;width:min(440px,100%);box-shadow:0 20px 40px rgba(0,0,0,.4);animation:dialogIn 0.25s cubic-bezier(0.16, 1, 0.3, 1)}
+@keyframes dialogIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
 .dialog h2{margin:0 0 10px;font-size:22px;font-weight:800}
 .dialog p{margin:0 0 16px;color:var(--tx2);font-weight:600;line-height:1.45;font-size:15px}
-.dialog .tf{margin-bottom:6px;background:var(--s2)}
+.dialog .tf{margin-bottom:8px;background:var(--s2)}
 .dact{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
-#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--s4);color:var(--tx);padding:14px 22px;border-radius:14px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:120;max-width:90vw;text-align:center}
+.settings-list{display:flex;flex-direction:column;gap:12px;max-height:50vh;overflow-y:auto;padding-right:4px}
+.setting-item{display:flex;align-items:center;justify-content:space-between;background:var(--s2);padding:10px 14px;border-radius:12px}
+.setting-item span{font-weight:700;font-size:14px}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--s4);color:var(--tx);padding:14px 22px;border-radius:14px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:all .25s cubic-bezier(0.1,1,0.1,1);z-index:120;max-width:90vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 #toast.show{opacity:1;transform:translate(-50%,0)}
 
 #btnPanel{display:none}
 
-/* touch */
+/* touch & responsive */
 @media (pointer:coarse){
-  .ib{width:44px;height:44px}
-  .ib.sm{width:40px;height:40px}
+  .ib{width:42px;height:42px}
+  .ib.sm{width:38px;height:38px}
   .frow input,.fl input,.tf,.pname{font-size:16px}
-  .frow input{height:42px}
-  .orow{height:50px}
-  .tile{height:74px}
-  .rail button{width:62px;height:62px}
-  .axis button{height:40px;min-width:50px}
-  .row{height:44px}
-  .mi{height:52px}
+  .orow{height:46px}
+  .tile{height:72px}
+  .rail button{width:56px;height:56px}
 }
 @media (max-width:820px){
-  :root{--nw:104px;--tlh:214px}
+  :root{--nw:104px;--tlh:200px}
   #editor{grid-template-columns:minmax(0,1fr)}
-  #side{position:absolute;top:56px;left:0;bottom:var(--tlh);width:min(88vw,340px);z-index:20;transform:translateX(-105%);transition:transform .25s;box-shadow:10px 0 30px rgba(0,0,0,.5)}
+  #side{position:absolute;top:56px;left:0;bottom:var(--tlh);width:min(88vw,320px);z-index:20;transform:translateX(-105%);transition:transform var(--anim-speed);box-shadow:10px 0 30px rgba(0,0,0,.5)}
   #side.open{transform:none}
   #btnPanel{display:grid}
   .vp-hint{display:none}
   .acts{grid-template-columns:1fr}
   .home-in{padding:20px 18px 60px}
-  .pname{width:34vw}
+  .pname{width:28vw}
   .rail{right:8px}
-}
-@media (max-height:600px){
-  :root{--tlh:172px}
-  .rail button{width:52px;height:46px;font-size:0;gap:0}
-  .rail button span{display:none}
-  .row{height:36px}
 }
 </style>
 </head>
@@ -257,15 +284,25 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacin
 <div id="home" class="screen">
   <div class="deco" id="deco" aria-hidden="true"></div>
   <div class="home-in">
-    <div class="brand"><span data-logo></span><span class="brand-t">bliss</span></div>
+    <div class="brand">
+      <div class="brand-left"><span data-logo></span><span class="brand-t">bliss</span></div>
+      <div class="home-actions-top">
+        <button class="ib" id="btnThemeHome" title="Сменить тему"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></button>
+        <button class="ib" id="btnSettingsHome" title="Настройки"><svg class="ic" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+      </div>
+    </div>
     <h1>Анимируй<br>в трёх измерениях</h1>
-    <p class="lead">Простая студия 3D-анимации с ключевыми кадрами. Создайте проект или продолжите начатый.</p>
+    <p class="lead">Простая студия 3D-моделирования и анимации. Создайте проект или откройте готовую модель.</p>
     <div class="acts">
       <button class="act a" id="actNew"><span class="bubble" data-bubble="plus"></span><span><b>Создать проект</b><small>Пустая сцена с сеткой</small></span></button>
       <button class="act b" id="actImp"><span class="bubble" data-bubble="import"></span><span><b>Открыть модель</b><small>Импорт .glb или .gltf</small></span></button>
     </div>
     <div class="sec"><h2>Ваши проекты</h2><span id="projCount"></span></div>
     <div class="pgrid" id="projGrid"></div>
+    
+    <div class="home-footer-note">
+      🚀 <b>Мобильное APK приложение для Android и EXE версия для Windows появятся совсем скоро!</b> Следите за обновлениями.
+    </div>
   </div>
 </div>
 
@@ -274,37 +311,40 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacin
   <header class="topbar">
     <button class="ib" id="btnHome" title="Все проекты"><span data-logo></span></button>
     <div class="mw">
-      <button class="btn text" id="btnFile" data-ic="file" data-s="20">Файл</button>
+      <button class="btn text" id="btnFile" data-ic="file" data-s="18">Файл</button>
       <div class="menu hidden" id="fileMenu">
         <button class="mi" data-act="new" data-ic="plus">Новый проект</button>
         <button class="mi" data-act="save" data-ic="save">Сохранить<small>Ctrl+S</small></button>
         <div class="div"></div>
-        <button class="mi" data-act="settings" data-ic="settings">Настройки</button>
-        <div class="div"></div>
         <button class="mi" data-act="import" data-ic="import">Импорт модели<small>.glb .gltf .json</small></button>
-        <button class="mi" data-act="export" data-ic="export">Экспорт модели<small>.glb с анимациями</small></button>
+        <button class="mi" data-act="export" data-ic="export">Экспорт модели<small>.glb</small></button>
         <div class="div"></div>
+        <button class="mi" data-act="settings" data-ic="panel">Настройки</button>
         <button class="mi" data-act="home" data-ic="home">Все проекты</button>
       </div>
     </div>
     <input id="projName" class="pname" maxlength="40" spellcheck="false" aria-label="Название проекта">
-    <div class="modebar" id="modebar"><button data-work="model" class="on">Модель</button><button data-work="paint">Раскраска</button><button data-work="animation">Анимация</button></div>
-    <input type="color" id="paintColor" value="#5fc7b9" title="Цвет кисти" class="hidden">
+    <div class="modebar" id="modebar">
+      <button data-work="model" class="on">Модель</button>
+      <button data-work="paint">Раскраска</button>
+      <button data-work="animation">Анимация</button>
+    </div>
     <span class="grow"></span>
-    <button class="ib" id="btnPanel" data-ic="panel" title="Фигуры, оутлайнер, свойства"></button>
+    <button class="ib" id="btnSettings" title="Настройки вида"><svg class="ic" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+    <button class="ib" id="btnPanel" data-ic="panel" title="Фигуры и оутлайнер"></button>
   </header>
 
   <div id="viewport">
     <canvas id="cv"></canvas>
     <button class="ib vp-fab" id="btnFocus" data-ic="focus" title="Центрировать камеру"></button>
-    <div class="vp-hint">Тяните объект напрямую · Камера: левая кнопка по пустому месту, правая — сдвиг, колесо — масштаб</div>
+    <div class="vp-hint">Тяните объект напрямую · Вращение: ЛКМ · Перемещение: ПКМ · Масштаб: колесико</div>
 
     <div class="rail" id="rail">
-      <button data-m="translate" class="on" data-ic="move" data-s="24" title="Двигать (G)"><span>Двигать</span></button>
-      <button data-m="rotate" data-ic="rotate" data-s="24" title="Вращать (R)"><span>Вращать</span></button>
-      <button data-m="scale" data-ic="scale" data-s="24" title="Размер (S)"><span>Размер</span></button>
+      <button data-m="translate" class="on" data-ic="move" data-s="22" title="Двигать (G)"><span>Двигать</span></button>
+      <button data-m="rotate" data-ic="rotate" data-s="22" title="Вращать (R)"><span>Вращать</span></button>
+      <button data-m="scale" data-ic="scale" data-s="22" title="Размер (S)"><span>Размер</span></button>
       <div class="sp"></div>
-      <button class="act" id="rKey" data-ic="key" data-s="24" title="Ключевой кадр (I)"><span>Ключ</span></button>
+      <button class="act" id="rKey" data-ic="key" data-s="22" title="Ключевой кадр (I)"><span>Ключ</span></button>
       <button id="rPlay" title="Пуск / пауза"></button>
     </div>
 
@@ -320,42 +360,92 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacin
   <aside id="side">
     <div class="card"><div class="ct">Фигуры</div><div class="tiles" id="tiles"></div></div>
     <div class="card">
-      <div class="ctrow"><div class="ct">Оутлайнер</div><button class="ib sm" id="btnNewFolder" data-ic="folderplus" data-s="20" title="Новая папка"></button></div>
+      <div class="ctrow"><div class="ct">Оутлайнер</div><button class="ib sm" id="btnNewFolder" data-ic="folderplus" data-s="18" title="Новая папка"></button></div>
       <div id="objs"></div>
     </div>
     <div class="card" id="props"></div>
   </aside>
 
-  <section id="tl">
-    <div class="tl-head">
-      <button class="btn tonal sm" id="bAnim" title="Выбор и создание анимаций"></button>
-      <span class="sep"></span>
-      <button class="ib" id="bStart" data-ic="tostart" title="В начало (Home)"></button>
-      <button class="ib pl" id="bPlay" title="Пуск / пауза (Пробел)"></button>
-      <button class="ib on" id="bLoop" data-ic="loop" title="Зацикливание"></button>
-      <span class="sep"></span>
-      <label class="fl">Кадр <input id="frameIn" type="number" min="0" value="0"></label>
-      <label class="fl">из <input id="endIn" type="number" min="1" max="1200" value="120"></label>
-      <span class="sep"></span>
-      <button class="btn tonal sm" id="bKey" data-ic="key" data-s="18" title="Добавить ключевой кадр (I)">Ключ</button>
-      <button class="ib" id="bDelKey" data-ic="trash" data-s="20" title="Удалить ключ (Delete)"></button>
-      <button class="chip" id="bAuto" data-ic="rec" data-s="16" title="Автоматически ставить ключи при изменении">Автоключ</button>
-      <button class="chip on" id="bEase" title="Тип интерполяции">Плавно</button>
-      <span class="grow"></span>
-      <button class="ib" id="bZout" data-ic="zoomout" title="Уменьшить"></button>
-      <button class="ib" id="bZin" data-ic="zoomin" title="Увеличить"></button>
+  <!-- НИЖНЯЯ ПАНЕЛЬ С КОНТЕКСТНЫМ СОДЕРЖИМЫМ -->
+  <section id="bottomPanel">
+    <!-- Анимация (Таймлайн) -->
+    <div id="tl" class="hidden">
+      <div class="tl-head">
+        <button class="btn tonal sm" id="bAnim" title="Выбор и создание анимаций"></button>
+        <span class="sep"></span>
+        <button class="ib" id="bStart" data-ic="tostart" title="В начало"></button>
+        <button class="ib pl" id="bPlay" title="Пуск / пауза"></button>
+        <button class="ib on" id="bLoop" data-ic="loop" title="Зацикливание"></button>
+        <span class="sep"></span>
+        <label class="fl">Кадр <input id="frameIn" type="number" min="0" value="0"></label>
+        <label class="fl">из <input id="endIn" type="number" min="1" max="1200" value="120"></label>
+        <span class="sep"></span>
+        <button class="btn tonal sm" id="bKey" data-ic="key" data-s="16" title="Ключ">Ключ</button>
+        <button class="ib" id="bDelKey" data-ic="trash" data-s="18" title="Удалить ключ"></button>
+        <button class="chip" id="bAuto" data-ic="rec" data-s="14" title="Автоключ">Автоключ</button>
+        <button class="chip on" id="bEase" title="Интерполяция">Плавно</button>
+        <span class="grow"></span>
+        <button class="ib" id="bZout" data-ic="zoomout" title="Уменьшить"></button>
+        <button class="ib" id="bZin" data-ic="zoomin" title="Увеличить"></button>
+      </div>
+      <div class="tl-scroll" id="tlScroll"><div class="tl-in" id="tlIn"></div></div>
     </div>
-    <div class="tl-scroll" id="tlScroll"><div class="tl-in" id="tlIn"></div></div>
+
+    <!-- Моделирование: аутлайнер со всеми блоками снизу -->
+    <div id="modelBottom" class="hidden">
+      <div class="mb-header">
+        <div class="mb-title"><svg class="ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Быстрый выбор блоков и объектов сцены</div>
+        <span class="cnt" id="mbCount">0 объектов</span>
+      </div>
+      <div class="mb-list" id="mbList"></div>
+    </div>
+
+    <!-- Раскраска: палитра и текстуры снизу -->
+    <div id="paintBottom" class="hidden">
+      <div class="pb-row">
+        <div class="pb-title">Цветовая палитра:</div>
+        <div class="pb-colors" id="paintColorsList"></div>
+        <input type="color" id="paintCustomColor" value="#5fc7b9" style="width:34px;height:34px;border:0;border-radius:50%;background:none;cursor:pointer" title="Свой цвет">
+      </div>
+      <div class="pb-row">
+        <div class="pb-title">Материал / Текстура:</div>
+        <div class="tex-chips" id="texChips">
+          <button class="tex-chip on" data-rough="0.5" data-metal="0.0">Гладкий</button>
+          <button class="tex-chip" data-rough="0.2" data-metal="0.8">Металл</button>
+          <button class="tex-chip" data-rough="0.9" data-metal="0.0">Матовый</button>
+          <button class="tex-chip" data-rough="0.1" data-metal="0.9">Глянец</button>
+        </div>
+      </div>
+    </div>
   </section>
 </div>
 
+<!-- ДИАЛОГИ И МОДАЛКИ -->
 <div class="scrim hidden" id="scrim"><div class="dialog">
   <h2 id="dT"></h2><p id="dX"></p><input id="dI" class="tf hidden" maxlength="40" spellcheck="false">
   <div class="dact"><button class="btn text" id="dC">Отмена</button><button class="btn fill" id="dK">ОК</button></div>
 </div></div>
+
+<!-- МОДАЛЬНОЕ ОКНО НАСТРОЕК -->
+<div class="scrim hidden" id="settingsModal">
+  <div class="dialog" style="width:min(480px,100%)">
+    <h2>Настройки вида и функций</h2>
+    <p>Настройте приложение под свои предпочтения.</p>
+    <div class="settings-list">
+      <div class="setting-item"><span>Темная тема</span><button class="btn tonal sm" id="stTheme">Светлая / Темная</button></div>
+      <div class="setting-item"><span>Анимации интерфейса</span><button class="btn tonal sm on" id="stAnim">Включены</button></div>
+      <div class="setting-item"><span>Отображение сетки</span><button class="btn tonal sm on" id="stGrid">Включена</button></div>
+      <div class="setting-item"><span>Тени в сцене</span><button class="btn tonal sm on" id="stShadows">Включены</button></div>
+      <div class="setting-item"><span>Частота кадров редактора</span><span style="font-weight:800;color:var(--pr)">60 FPS</span></div>
+    </div>
+    <div class="dact"><button class="btn fill" id="stClose">Готово</button></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 <input type="file" id="fileIn" accept=".glb,.gltf,.json" class="hidden">
 
+<!-- THREE.JS & DEPENDENCIES -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
@@ -364,17 +454,16 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacin
 <script>
 (()=>{
 'use strict';
-const coarse = window.matchMedia('(pointer: coarse)').matches;
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const DEG=Math.PI/180, PAD=14;
+const coarse=matchMedia('(pointer:coarse)').matches;
 
-/* ---------- Иконки ---------- */
+/* Иконки */
 const P={
 plus:'<path d="M12 5v14M5 12h14"/>',
 file:'<path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/>',
-settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
 import:'<path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19.5h14"/>',
 export:'<path d="M12 15V4"/><path d="M7.5 8.5L12 4l4.5 4.5"/><path d="M5 19.5h14"/>',
 play:'<path d="M8 5.7v12.6a.6.6 0 0 0 .9.5l10.2-6.3a.6.6 0 0 0 0-1L8.9 5.2a.6.6 0 0 0-.9.5z" fill="currentColor"/>',
@@ -423,14 +512,15 @@ function hydrate(root){
   $$('[data-bubble]',root).forEach(e=>{e.innerHTML=`<svg class="bg" viewBox="0 0 100 100"><path d="${blob(8,.07)}"/></svg>`+ic(e.dataset.bubble,28)});
 }
 
-/* ---------- Состояние ---------- */
-const KINDS={cube:'Куб',block:'Воксель',sphere:'Шар',cylinder:'Цилиндр',cone:'Конус',torus:'Тор',plane:'Плоскость'};
-const COLORS=['#d9e8e5','#5fc7b9','#2f8f86','#e6c9a8','#c7a7d9','#9db8e8','#e3a0a0','#566462'];
+/* Состояние */
+const KINDS={cube:'Куб',block:'Пиксель',sphere:'Шар',cylinder:'Цилиндр',cone:'Конус',torus:'Тор',plane:'Плоскость'};
+const COLORS=['#d9e8e5','#5fc7b9','#2f8f86','#e6c9a8','#c7a7d9','#9db8e8','#e3a0a0','#566462','#e85d5d','#e8b85d','#5de872','#5dcbe8'];
 const state={id:null,name:'',fps:24,end:120,cur:0,playing:false,loop:true,auto:false,smooth:true,
   objs:[],folders:[],anims:[{id:'a1',name:'Анимация 1',end:120}],anim:'a1',
-  sel:null,selKey:null,ppf:10,mode:'translate',axis:'free',mc:false,pixels:16,work:'model',paint:'#5fc7b9'};
+  sel:null,selKey:null,ppf:10,mode:'translate',axis:'free',mc:false,pixels:16,work:'model',paint:'#5fc7b9',
+  settings:{theme:'dark',anim:true,grid:true,shadows:true}};
 let uidc=0,fidc=0,animc=1,hinted=false,editorOn=false,exporting=false,saveTimer=null,saving=false,NW=152,inited=false;
-let R,scene,cam,orbit,tc,world,box,grid;
+let R,scene,cam,orbit,tc,world,box,grid,sunLight;
 const byUid=u=>state.objs.find(o=>o.uid===u);
 const curAnim=()=>state.anims.find(a=>a.id===state.anim)||state.anims[0];
 const folderOf=o=>o.folder?state.folders.find(f=>f.id===o.folder):null;
@@ -439,7 +529,7 @@ const applyVis=o=>{o.root.visible=isVis(o)};
 const captureBase=o=>{o.base={p:o.root.position.toArray(),q:o.root.quaternion.toArray(),s:o.root.scale.toArray()}};
 const restoreBase=o=>{const b=o.base;if(!b)return;o.root.position.fromArray(b.p);o.root.quaternion.fromArray(b.q);o.root.scale.fromArray(b.s)};
 
-/* ---------- Хранилище IndexedDB ---------- */
+/* IndexedDB */
 let _db=null;const mem=new Map();
 function dbo(){if(!_db)_db=new Promise((res,rej)=>{try{const r=indexedDB.open('bliss-projects',1);r.onupgradeneeded=()=>r.result.createObjectStore('p',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}catch(e){rej(e)}});return _db}
 const tx=(db,mode)=>db.transaction('p',mode).objectStore('p');
@@ -449,7 +539,7 @@ async function dbGet(id){try{return await rq(tx(await dbo(),'readonly').get(id))
 async function dbPut(rec){try{await rq(tx(await dbo(),'readwrite').put(rec))}catch(e){mem.set(rec.id,rec)}}
 async function dbDel(id){try{await rq(tx(await dbo(),'readwrite').delete(id))}catch(e){mem.delete(id)}}
 
-/* ---------- Диалоги и меню ---------- */
+/* Диалоги и уведомления */
 function dlg({title,text='',input,ok='ОК',cancel='Отмена'}){
   return new Promise(res=>{
     const sc=$('#scrim'),di=$('#dI');
@@ -463,26 +553,6 @@ function dlg({title,text='',input,ok='ОК',cancel='Отмена'}){
     sc.onclick=e=>{if(e.target===sc)fin(null)};
     di.onkeydown=e=>{if(e.key==='Enter')$('#dK').click();if(e.key==='Escape')fin(null)};
   });
-}
-async function showSettings(){
-  const mcState = state.mc ? 'Вкл' : 'Выкл';
-  const pxVal = state.pixels;
-  const res = await dlg({
-    title: 'Настройки проекта',
-    text: `Режим Minecraft (воксельная сетка): ${mcState}\nПлотность сетки: ${pxVal} пикселей на блок\n\nХотите изменить режим вокселей для текущего проекта?`,
-    ok: 'Изменить',
-    cancel: 'Закрыть'
-  });
-  if(res){
-    state.mc = !state.mc;
-    if(state.mc){
-      const p = await dlg({title: 'Сетка вокселей', text: 'Укажите размер сетки (например, 16 или 32):', input: String(state.pixels), ok: 'Готово'});
-      if(p) state.pixels = clamp(parseInt(p)||16, 1, 128);
-    }
-    renderTiles();
-    toast(state.mc ? `Воксельный режим Minecraft включен (${state.pixels}px)` : 'Стандартный 3D-режим включен');
-    markDirty();
-  }
 }
 let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800)}
 let popEl=null,popT=0;
@@ -499,7 +569,29 @@ function popMenu(anchor,items){
   m.onclick=e=>{const b=e.target.closest('[data-i]');if(!b)return;const it=items[+b.dataset.i];closePop();if(it&&it.fn)it.fn()};
 }
 
-/* ---------- Главный экран ---------- */
+/* Тема и настройки */
+function applySettings(){
+  const st=state.settings;
+  document.documentElement.classList.toggle('light',st.theme==='light');
+  document.body.classList.toggle('no-anim',!st.anim);
+  if(grid)grid.visible=st.grid;
+  if(sunLight)sunLight.castShadow=st.shadows;
+  if(R)R.shadowMap.enabled=st.shadows;
+  $('#stTheme').textContent=st.theme==='light'?'Светлая':'Темная';
+  $('#stAnim').textContent=st.anim?'Включены':'Выключены';
+  $('#stAnim').classList.toggle('on',st.anim);
+  $('#stGrid').textContent=st.grid?'Включена':'Выключена';
+  $('#stGrid').classList.toggle('on',st.grid);
+  $('#stShadows').textContent=st.shadows?'Включены':'Выключены';
+  $('#stShadows').classList.toggle('on',st.shadows);
+}
+function toggleTheme(){
+  state.settings.theme=state.settings.theme==='dark'?'light':'dark';
+  applySettings();
+  toast('Тема изменена: '+(state.settings.theme==='light'?'Светлая':'Темная'));
+}
+
+/* Главный экран */
 function initDecor(){
   const d=$('#deco');
   const mk=(n,a,sz,css,fill,op)=>`<svg viewBox="0 0 100 100" style="width:${sz}px;height:${sz}px;${css};opacity:${op}"><path d="${blob(n,a)}" fill="${fill}"/></svg>`;
@@ -509,18 +601,11 @@ async function renderHome(){
   const list=(await dbAll()).sort((a,b)=>b.updated-a.updated);
   $('#projCount').textContent=list.length?String(list.length):'';
   const g=$('#projGrid');
-  if(!list.length){g.innerHTML='<div class="empty-home">Пока нет проектов. Создайте первый.</div>';return}
-  g.innerHTML=list.map(p=>`<pcard class="pcard" data-id="${p.id}"><div class="pth">${p.thumb?`<img src="${p.thumb}" alt="">`:ic('cube',36)}</div><div class="pmeta"><div><b>${esc(p.name)}</b><small>${new Date(p.updated).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></div><button class="ib sm" data-del="${p.id}" title="Удалить">${ic('trash',18)}</button></div></pcard>`).join('');
+  if(!list.length){g.innerHTML='<div class="empty-home">Пока нет проектов. Создайте первый или импортируйте модель.</div>';return}
+  g.innerHTML=list.map(p=>`<div class="pcard" data-id="${p.id}"><div class="pth">${p.thumb?`<img src="${p.thumb}" alt="">`:ic('cube',36)}</div><div class="pmeta"><div><b>${esc(p.name)}</b><small>${new Date(p.updated).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</small></div><button class="ib sm" data-del="${p.id}" title="Удалить">${ic('trash',18)}</button></div></div>`).join('');
 }
 function showHome(){editorOn=false;closePop();$('#editor').classList.add('hidden');$('#home').classList.remove('hidden');renderHome()}
-function showEditor(){
-  $('#home').classList.add('hidden');
-  $('#editor').classList.remove('hidden');
-  editorOn=true;
-  if(!inited){initThree();inited=true;}
-  setNW();
-  setTimeout(resize, 40);
-}
+function showEditor(){$('#home').classList.add('hidden');$('#editor').classList.remove('hidden');editorOn=true;if(!inited){initThree();inited=true}setNW();resize()}
 async function createProject(name,mc=false,pixels=16){
   const rec={id:'p'+Date.now().toString(36),name,updated:Date.now(),thumb:'',glb:null,mc,pixels};
   await dbPut(rec);await openProject(rec);state.mc=mc;state.pixels=pixels;updateWorkMode('model');renderTiles();renderAll();return rec;
@@ -541,18 +626,18 @@ function resetScene(){
   orbit.target.set(0,.8,0);cam.position.set(6,4.5,8);updateAnimBtn();
 }
 
-/* ---------- 3D Сцена ---------- */
+/* 3D Инициализация */
 function initThree(){
   const cv=$('#cv'),vp=$('#viewport');
   R=new THREE.WebGLRenderer({canvas:cv,antialias:true});
   R.setPixelRatio(Math.min(devicePixelRatio||1,2));
-  R.shadowMap.enabled=true;R.shadowMap.type=THREE.PCFSoftShadowMap;R.outputEncoding=THREE.sRGBEncoding;
+  R.shadowMap.enabled=state.settings.shadows;R.shadowMap.type=THREE.PCFSoftShadowMap;R.outputEncoding=THREE.sRGBEncoding;
   scene=new THREE.Scene();scene.background=new THREE.Color(0x0a1110);
   cam=new THREE.PerspectiveCamera(50,1,.1,500);cam.position.set(6,4.5,8);
   scene.add(new THREE.HemisphereLight(0xdff5f1,0x0a1413,.85));
-  const sun=new THREE.DirectionalLight(0xffffff,.9);sun.position.set(5,9,6);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);
-  const sc=sun.shadow.camera;sc.left=-12;sc.right=12;sc.top=12;sc.bottom=-12;sc.near=1;sc.far=40;sun.shadow.bias=-.0005;scene.add(sun);
-  grid=new THREE.GridHelper(24,24,0x3f605b,0x1f2e2c);grid.material.transparent=true;grid.material.opacity=.85;scene.add(grid);
+  sunLight=new THREE.DirectionalLight(0xffffff,.9);sunLight.position.set(5,9,6);sunLight.castShadow=state.settings.shadows;sunLight.shadow.mapSize.set(2048,2048);
+  const sc=sunLight.shadow.camera;sc.left=-12;sc.right=12;sc.top=12;sc.bottom=-12;sc.near=1;sc.far=40;sunLight.shadow.bias=-.0005;scene.add(sunLight);
+  grid=new THREE.GridHelper(24,24,0x3f605b,0x1f2e2c);grid.material.transparent=true;grid.material.opacity=.85;grid.visible=state.settings.grid;scene.add(grid);
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.ShadowMaterial({opacity:.35}));
   floor.rotation.x=-Math.PI/2;floor.position.y=.001;floor.receiveShadow=true;scene.add(floor);
   world=new THREE.Group();scene.add(world);
@@ -607,33 +692,19 @@ function initThree(){
     if(state.mode==='translate'){
       if(ndcRay(e).intersectPlane(pl,tmp)){
         tmp.add(dd.off);
-        if(state.mc){
-          const step=1/state.pixels;
-          if(ax==='free'){root.position.x=Math.round(tmp.x/step)*step;root.position.z=Math.round(tmp.z/step)*step}
-          else if(ax==='x')root.position.x=Math.round(tmp.x/step)*step;
-          else if(ax==='z')root.position.z=Math.round(tmp.z/step)*step;
-          else root.position.y=Math.round(tmp.y/step)*step;
-        }else{
-          if(ax==='free'){root.position.x=clamp(tmp.x,-200,200);root.position.z=clamp(tmp.z,-200,200)}
-          else if(ax==='x')root.position.x=clamp(tmp.x,-200,200);
-          else if(ax==='z')root.position.z=clamp(tmp.z,-200,200);
-          else root.position.y=clamp(tmp.y,-200,200);
-        }
+        if(ax==='free'){root.position.x=clamp(tmp.x,-200,200);root.position.z=clamp(tmp.z,-200,200)}
+        else if(ax==='x')root.position.x=clamp(tmp.x,-200,200);
+        else if(ax==='z')root.position.z=clamp(tmp.z,-200,200);
+        else root.position.y=clamp(tmp.y,-200,200);
       }
     }else if(state.mode==='rotate'){
       const axis=new THREE.Vector3(ax==='x'?1:0,(ax==='free'||ax==='y')?1:0,ax==='z'?1:0);
-      let ang=(ax==='x'?dy:dx)*.012;
-      if(state.mc)ang=Math.round(ang/(Math.PI/8))*(Math.PI/8);
+      const ang=(ax==='x'?dy:dx)*.012;
       root.quaternion.copy(dd.q0).premultiply(new THREE.Quaternion().setFromAxisAngle(axis,ang));
     }else{
       const f=Math.exp(-dy*.006);
-      if(state.mc){
-        const step=1/state.pixels;
-        ['x','y','z'].forEach(k=>{if(ax==='free'||ax===k){const cur=Math.max(step,Math.round(root.scale[k]/step)*step*f);root.scale[k]=Math.max(step,cur)}});
-      }else{
-        if(ax==='free'){root.scale.copy(dd.s0).multiplyScalar(f);['x','y','z'].forEach(k=>{if(root.scale[k]<.01)root.scale[k]=.01})}
-        else{root.scale.copy(dd.s0);root.scale[ax]=Math.max(.01,dd.s0[ax]*f)}
-      }
+      if(ax==='free'){root.scale.copy(dd.s0).multiplyScalar(f);['x','y','z'].forEach(k=>{if(root.scale[k]<.01)root.scale[k]=.01})}
+      else{root.scale.copy(dd.s0);root.scale[ax]=Math.max(.01,dd.s0[ax]*f)}
     }
     refreshFields();
   }
@@ -665,53 +736,50 @@ function initThree(){
   })(last);
 }
 function resize(){
-  if(!R)return;
-  const vp=$('#viewport'),w=vp.clientWidth||window.innerWidth,h=vp.clientHeight||window.innerHeight;
-  if(!w||!h)return;
-  R.setSize(w,h,false);
-  cam.aspect=w/h;
-  cam.updateProjectionMatrix();
+  if(!R)return;const vp=$('#viewport'),w=vp.clientWidth,h=vp.clientHeight;if(!w||!h)return;
+  R.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();
 }
 function setNW(){NW=innerWidth<=820?104:152;document.documentElement.style.setProperty('--nw',NW+'px')}
 function setMode(m){state.mode=m;tc.setMode(m);$$('#rail [data-m]').forEach(x=>x.classList.toggle('on',x.dataset.m===m))}
-function updateWorkMode(mode){state.work=mode;$$('#modebar [data-work]').forEach(b=>b.classList.toggle('on',b.dataset.work===mode));$('#tl').classList.toggle('hidden',mode!=='animation');$('#tiles').parentElement.classList.toggle('hidden',mode==='paint');$('#paintColor').classList.toggle('hidden',mode!=='paint');$('#rail').classList.toggle('hidden',mode!=='model');if(mode==='paint')toast('Нажмите на объект для покраски');}
 
-/* ---------- Работа с объектами и вокселями ---------- */
+/* Переключение режимов работы (Модель, Раскраска, Анимация) */
+function updateWorkMode(mode){
+  state.work=mode;
+  $$('#modebar [data-work]').forEach(b=>b.classList.toggle('on',b.dataset.work===mode));
+  $('#tl').classList.toggle('hidden',mode!=='animation');
+  $('#modelBottom').classList.toggle('hidden',mode!=='model');
+  $('#paintBottom').classList.toggle('hidden',mode!=='paint');
+  $('#tiles').parentElement.classList.toggle('hidden',mode==='paint');
+  $('#rail').classList.toggle('hidden',mode!=='model');
+  if(mode==='paint')toast('Нажмите на объект в сцене для покраски');
+}
+
+/* Объекты и папки */
 function makeObj(root,name,kind){
-  root.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});
+  root.traverse(m=>{if(m.isMesh){m.castShadow=state.settings.shadows;m.receiveShadow=true}});
   const o={uid:++uidc,name,kind,root,tracks:{},keys:null,vis:true,folder:null,base:null};
   o.tracks[state.anim]=o.keys=[];captureBase(o);
   world.add(root);state.objs.push(o);return o;
 }
 function addShape(kind){
   const mat=new THREE.MeshStandardMaterial({color:0xd9e8e5,roughness:.55,metalness:.05,side:kind==='plane'?THREE.DoubleSide:THREE.FrontSide});
-  let geom;
-  if(state.mc||kind==='block'){
-    const step=1/state.pixels;
-    geom=new THREE.BoxGeometry(step*16,step*16,step*16);
-  }else{
-    const G={cube:()=>new THREE.BoxGeometry(1,1,1),sphere:()=>new THREE.SphereGeometry(.6,48,32),cylinder:()=>new THREE.CylinderGeometry(.5,.5,1.2,48),cone:()=>new THREE.ConeGeometry(.6,1.2,48),torus:()=>new THREE.TorusGeometry(.5,.2,24,64),plane:()=>new THREE.PlaneGeometry(1.8,1.8)};
-    geom=G[kind]();
-  }
+  const G={cube:()=>new THREE.BoxGeometry(1,1,1),sphere:()=>new THREE.SphereGeometry(.6,48,32),cylinder:()=>new THREE.CylinderGeometry(.5,.5,1.2,48),cone:()=>new THREE.ConeGeometry(.6,1.2,48),torus:()=>new THREE.TorusGeometry(.5,.2,24,64),plane:()=>new THREE.PlaneGeometry(1.8,1.8)};
+  const geom=kind==='block'?new THREE.BoxGeometry(1/state.pixels,1/state.pixels,1/state.pixels):G[kind]();
   const m=new THREE.Mesh(geom,mat);
   const n=state.objs.filter(o=>o.kind===kind).length+1,c=state.objs.length;
-  const lift=state.mc?0.5:{cube:.5,block:.5,sphere:.6,cylinder:.6,cone:.6,torus:.7,plane:.01}[kind];
-  if(state.mc){
-    m.position.set(0,lift,0);
-  }else{
-    m.position.set(((c%5)-2)*1.5,lift,0);
-    if(kind==='plane')m.rotation.x=-Math.PI/2;
-  }
-  const o=makeObj(m,`${KINDS[state.mc?'block':kind]} ${n}`,state.mc?'block':kind);
+  const lift={cube:.5,block:.5/state.pixels,sphere:.6,cylinder:.6,cone:.6,torus:.7,plane:.01}[kind];
+  if(kind==='block'){const step=1/state.pixels;m.position.set(((c%8)-4)*step*3,lift,Math.floor(c/8)*step*3)}else m.position.set(((c%5)-2)*1.5,lift,0);
+  if(kind==='plane')m.rotation.x=-Math.PI/2;
+  const o=makeObj(m,`${KINDS[kind]} ${n}`,kind);
   renderAll();select(o);markDirty();
   if(innerWidth<=820)$('#side').classList.remove('open');
 }
 function isDescendant(candidate,parent){let p=candidate.root.parent;while(p&&p!==world){if(p===parent.root)return true;p=p.parent}return false}
 function attachObject(o,parent){
   if(o===parent||isDescendant(parent,o)){toast('Нельзя создать цикл в иерархии');return}
-  parent.root.attach(o.root);o.parentUid=parent.uid;renderObjs();markDirty();toast('Прикреплено к '+parent.name);
+  parent.root.attach(o.root);o.parentUid=parent.uid;renderObjs();markDirty();toast('Объект прикреплён к '+parent.name);
 }
-function detachObject(o){if(!o.root.parent||o.root.parent===world){toast('Объект уже самостоятельный');return}world.attach(o.root);o.parentUid=null;renderObjs();markDirty();toast('Отсоединено')}
+function detachObject(o){if(!o.root.parent||o.root.parent===world){toast('Объект уже самостоятельный');return}world.attach(o.root);o.parentUid=null;renderObjs();markDirty();toast('Объект отсоединён')}
 function removeObj(o){
   if(state.sel===o)select(null);
   state.objs.filter(x=>x.root.parent===o.root).forEach(x=>{world.attach(x.root);x.parentUid=null});
@@ -733,17 +801,22 @@ function setColor(o,hex){
   o.root.traverse(m=>{if(m.isMesh){if(!m.material.userData.own){m.material=m.material.clone();m.material.userData.own=true}m.material.color.set(hex)}});
   markDirty();
 }
+function setMaterialProps(rough,metal){
+  if(!state.sel)return;
+  state.sel.root.traverse(m=>{if(m.isMesh){if(!m.material.userData.own){m.material=m.material.clone();m.material.userData.own=true}m.material.roughness=rough;m.material.metalness=metal}});
+  markDirty();toast('Материал обновлен');
+}
 function select(o){
   state.sel=o||null;
   if(o&&isVis(o)){tc.attach(o.root);box.setFromObject(o.root);box.visible=true}else{tc.detach();box.visible=false}
   $('#axisBar').classList.toggle('hidden',!o);
-  renderObjs();renderProps();syncSel();
+  renderObjs();renderProps();renderModelBottom();syncSel();
 }
 function onTransformEnd(){
   const o=state.sel;refreshFields();
   if(o&&!o.keys.length)captureBase(o);
   if(state.auto)autoKey();
-  else if(o&&o.keys.length&&!hinted){hinted=true;toast('Нажмите «Ключ», чтобы записать положение')}
+  else if(o&&o.keys.length&&!hinted){hinted=true;toast('Нажмите «Ключ», чтобы записать положение в анимацию')}
   markDirty();
 }
 function newFolder(name){const f={id:'f'+(++fidc),name,open:true,vis:true};state.folders.push(f);return f}
@@ -760,7 +833,7 @@ function deleteFolder(f){
 }
 async function createFolderDialog(){
   const sel=state.sel;
-  const n=await dlg({title:'Новая папка',text:sel?`Объект «${sel.name}» будет перемещен.`:'',input:'Папка '+(state.folders.length+1),ok:'Создать'});
+  const n=await dlg({title:'Новая папка',text:sel?`Объект «${sel.name}» будет перемещен в новую папку.`:'',input:'Папка '+(state.folders.length+1),ok:'Создать'});
   if(!n)return;
   const f=newFolder(n);
   if(sel&&state.objs.includes(sel))moveToFolder(sel,f.id);else{renderObjs();renderTL();markDirty()}
@@ -785,7 +858,7 @@ function folderItems(f){
   return it;
 }
 
-/* ---------- Таймлайн ---------- */
+/* Ключи и анимация */
 const _q1=new THREE.Quaternion(),_q2=new THREE.Quaternion();
 function sample(K,f){
   let a,b,t=0;
@@ -823,8 +896,8 @@ function deleteKey(){
 }
 function setTime(f){state.cur=clamp(f,0,state.end);applyTime(state.cur);updatePH();refreshFields()}
 function setPlayIcon(n){
-  const b=$('#bPlay');if(b)b.innerHTML=ic(n,24);
-  const r=$('#rPlay');if(r)r.innerHTML=ic(n,24)+'<span>'+(n==='pause'?'Пауза':'Пуск')+'</span>';
+  const b=$('#bPlay');if(b)b.innerHTML=ic(n,22);
+  const r=$('#rPlay');if(r)r.innerHTML=ic(n,22)+'<span>'+(n==='pause'?'Пауза':'Пуск')+'</span>';
 }
 function play(){if(!state.objs.length)return;if(state.cur>=state.end)state.cur=0;state.playing=true;setPlayIcon('pause')}
 function pause(){state.playing=false;setPlayIcon('play')}
@@ -836,7 +909,7 @@ function updatePH(){
 }
 function updateAnimBtn(){
   const b=$('#bAnim');if(!b)return;
-  b.innerHTML=ic('anim',18)+`<span class="an">${esc(curAnim().name)}</span>`+ic('down',16);
+  b.innerHTML=ic('anim',16)+`<span class="an">${esc(curAnim().name)}</span>`+ic('down',14);
 }
 function switchAnim(id){
   const a=state.anims.find(x=>x.id===id);if(!a)return;
@@ -861,7 +934,7 @@ async function renameAnim(){
 }
 async function delAnim(){
   if(state.anims.length<2)return;
-  const a=curAnim(),ok=await dlg({title:'Удалить анимацию?',text:'«'+a.name+'» будет удалена.',ok:'Удалить'});
+  const a=curAnim(),ok=await dlg({title:'Удалить анимацию?',text:'«'+a.name+'» будет удалена со всеми ключами.',ok:'Удалить'});
   if(!ok)return;
   state.anims=state.anims.filter(x=>x!==a);state.objs.forEach(o=>{delete o.tracks[a.id]});
   switchAnim(state.anims[0].id);
@@ -877,12 +950,12 @@ function animMenu(anchor){
     {label:'Дублировать',icon:'copy',fn:dupAnim},
     {label:'Переименовать',icon:'edit',fn:renameAnim},
     {label:'Удалить',icon:'trash',danger:true,disabled:state.anims.length<2,fn:delAnim},
-    '-',{label:'FPS: '+state.fps,icon:'loop',fn:setFps});
+    '-',{label:'Частота кадров: '+state.fps,icon:'loop',fn:setFps});
   popMenu(anchor,items);
 }
 
-/* ---------- Оутлайнер и Свойства ---------- */
-function renderAll(){renderObjs();renderProps();renderTL()}
+/* Отрисовка интерфейса */
+function renderAll(){renderObjs();renderProps();renderTL();renderModelBottom()}
 const iconOf=k=>P[k]?k:'model';
 function orderItems(){
   const out=[];
@@ -892,29 +965,43 @@ function orderItems(){
 }
 function renderObjs(){
   const el=$('#objs');
-  if(!state.objs.length&&!state.folders.length){el.innerHTML='<div class="hint">Пока пусто. Добавьте воксель или фигуру.</div>';return}
+  if(!state.objs.length&&!state.folders.length){el.innerHTML='<div class="hint">Пока пусто. Добавьте фигуру или импортируйте модель.</div>';return}
   let h=orderItems().map(it=>{
     if(it.f){
       const f=it.f,n=state.objs.filter(o=>o.folder===f.id).length;
-      return `<div class="orow fd${f.open?' open':''}" data-f="${f.id}"><i class="chev">${ic('chevron',18)}</i>${ic('folder',20)}<span class="on">${esc(f.name)}</span><span class="cnt">${n}</span><button class="ib sm" data-feye="${f.id}" title="Скрыть папку">${ic(f.vis!==false?'eye':'eyeoff',18)}</button><button class="ib sm" data-fm="${f.id}" title="Меню">${ic('more',18)}</button></div>`;
+      return `<div class="orow fd${f.open?' open':''}" data-f="${f.id}"><i class="chev">${ic('chevron',16)}</i>${ic('folder',18)}<span class="on">${esc(f.name)}</span><span class="cnt">${n}</span><button class="ib sm" data-feye="${f.id}" title="Скрыть папку">${ic(f.vis!==false?'eye':'eyeoff',16)}</button><button class="ib sm" data-fm="${f.id}" title="Меню">${ic('more',16)}</button></div>`;
     }
     const o=it.o;
-    return `<div class="orow${o===state.sel?' sel':''}${it.ind?' ind':''}" data-u="${o.uid}" draggable="true">${ic(iconOf(o.kind),20)}<span class="on">${esc(o.name)}</span><button class="ib sm" data-mv="${o.uid}" title="В папку">${ic('foldermove',18)}</button><button class="ib sm" data-eye="${o.uid}" title="Видимость">${ic(o.vis?'eye':'eyeoff',18)}</button></div>`;
+    return `<div class="orow${o===state.sel?' sel':''}${it.ind?' ind':''}" data-u="${o.uid}">${ic(iconOf(o.kind),18)}<span class="on">${esc(o.name)}</span><button class="ib sm" data-mv="${o.uid}" title="Папка">${ic('foldermove',16)}</button><button class="ib sm" data-eye="${o.uid}" title="Видимость">${ic(o.vis?'eye':'eyeoff',16)}</button></div>`;
   }).join('');
-  if(state.folders.length)h+='<div class="rootdrop" data-root>Перетащите сюда, чтобы вынести</div>';
   el.innerHTML=h;
 }
+
+/* Отрисовка нижнего аутлайнера для режима «Модель» */
+function renderModelBottom(){
+  const listEl=$('#mbList'),cntEl=$('#mbCount');
+  cntEl.textContent=`${state.objs.length} общ.`;
+  if(!state.objs.length){listEl.innerHTML='<div class="hint">Нет объектов. Добавьте фигуру сверху.</div>';return}
+  listEl.innerHTML=state.objs.map(o=>`<div class="mb-item${o===state.sel?' sel':''}" data-u="${o.uid}">${ic(iconOf(o.kind),18)}<b>${esc(o.name)}</b></div>`).join('');
+}
+
+/* Отрисовка палитры для режима «Раскраска» */
+function renderPaintPalette(){
+  const pal=$('#paintColorsList');
+  pal.innerHTML=COLORS.map(c=>`<div class="pb-color${state.paint===c?' on':''}" style="background:${c}" data-col="${c}" title="${c}"></div>`).join('');
+}
+
 const fmt=v=>String(+v.toFixed(2));
 function renderProps(){
   const o=state.sel,el=$('#props');
-  if(!o){el.innerHTML='<div class="ct">Свойства</div><div class="hint">Выберите объект для точной настройки вокселей и позиционирования.</div>';return}
+  if(!o){el.innerHTML='<div class="ct">Свойства</div><div class="hint">Выберите объект для настройки параметров и трансформации.</div>';return}
   const row=(l,f,st)=>`<div class="frow"><span>${l}</span>${[0,1,2].map(a=>`<input type="number" step="${st}" inputmode="decimal" data-f="${f}" data-a="${a}">`).join('')}</div>`;
   el.innerHTML=`<div class="ct">Свойства</div><input class="tf" id="pName" value="${esc(o.name)}" maxlength="32" spellcheck="false">
   <div class="fh"><span></span><i style="--c:#d98f88">X</i><i style="--c:#92c496">Y</i><i style="--c:#8fb0e0">Z</i></div>
-  ${row('Позиция','p',state.mc?1/state.pixels:.1)}${row('Поворот','r',state.mc?22.5:5)}${row('Размер','s',state.mc?1/state.pixels:.1)}
+  ${row('Позиция','p',.1)}${row('Поворот','r',5)}${row('Размер','s',.1)}
   <div class="sw">${COLORS.map(c=>`<button style="--c:${c}" data-c="${c}" title="Цвет"></button>`).join('')}</div>
   <div class="pact"><button class="btn tonal" id="pAttach">Прикрепить…</button><button class="btn tonal" id="pDetach">Отсоединить</button></div>
-  <div class="pact"><button class="btn tonal" id="pDup">${ic('copy',18)}Копия</button><button class="btn tonal danger" id="pDel">${ic('trash',18)}Удалить</button></div>`;
+  <div class="pact"><button class="btn tonal" id="pDup">${ic('copy',16)}Копия</button><button class="btn tonal danger" id="pDel">${ic('trash',16)}Удалить</button></div>`;
   refreshFields(true);
 }
 function refreshFields(force){
@@ -926,7 +1013,7 @@ function refreshFields(force){
   });
 }
 
-/* ---------- Рендер таймлайна ---------- */
+/* Таймлайн */
 function renderTL(){
   const W=PAD*2+state.end*state.ppf,pp=state.ppf;
   const steps=[1,2,5,10,20,50,100,200];const step=steps.find(s=>s*pp>=46)||500;
@@ -939,11 +1026,11 @@ function renderTL(){
   const bg=`background-size:${pp*5}px 100%;background-position:${PAD}px 0`;
   let h=`<div style="width:${NW+W}px"><div class="ruler"><div class="rn"></div><div class="rt" id="ruler" style="width:${W}px">${t}</div></div>`;
   h+=orderItems().map(it=>{
-    if(it.f){const f=it.f;return `<div class="row fold${f.open?' open':''}" data-f="${f.id}"><div class="rn"><i class="chev">${ic('chevron',16)}</i>${ic('folder',16)}<span>${esc(f.name)}</span></div><div class="rt" style="width:${W}px"></div></div>`}
+    if(it.f){const f=it.f;return `<div class="row fold${f.open?' open':''}" data-f="${f.id}"><div class="rn"><i class="chev">${ic('chevron',14)}</i>${ic('folder',14)}<span>${esc(f.name)}</span></div><div class="rt" style="width:${W}px"></div></div>`}
     const o=it.o;
-    return `<div class="row${o===state.sel?' sel':''}" data-u="${o.uid}"><div class="rn${it.ind?' ind':''}">${ic(iconOf(o.kind),16)}<span>${esc(o.name)}</span></div><div class="rt" style="width:${W}px;${bg}">${o.keys.map((k,i)=>`<div class="key${k===state.selKey?' on':''}" data-u="${o.uid}" data-i="${i}" style="left:${PAD+k.f*pp}px"></div>`).join('')}</div></div>`;
+    return `<div class="row${o===state.sel?' sel':''}" data-u="${o.uid}"><div class="rn${it.ind?' ind':''}">${ic(iconOf(o.kind),14)}<span>${esc(o.name)}</span></div><div class="rt" style="width:${W}px;${bg}">${o.keys.map((k,i)=>`<div class="key${k===state.selKey?' on':''}" data-u="${o.uid}" data-i="${i}" style="left:${PAD+k.f*pp}px"></div>`).join('')}</div></div>`;
   }).join('');
-  if(!state.objs.length)h+='<div class="tl-empty">Добавьте объект и поставьте ключевой кадр.</div>';
+  if(!state.objs.length)h+='<div class="tl-empty">Нет объектов для анимации. Добавьте фигуру.</div>';
   h+='</div><div class="ph" id="ph"><span class="phh">0</span></div>';
   $('#tlIn').innerHTML=h;updatePH();
 }
@@ -983,7 +1070,7 @@ function startKeyDrag(e,el){
   addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up);
 }
 
-/* ---------- Импорт / Экспорт ---------- */
+/* Импорт / Экспорт */
 const parseGLB=data=>new Promise((res,rej)=>new THREE.GLTFLoader().parse(data,'',res,rej));
 const cloneKeys=a=>(a||[]).map(k=>({f:k.f,p:k.p,q:k.q,s:k.s}));
 function importGltf(gltf,name,asProject){
@@ -1033,7 +1120,6 @@ function importGltf(gltf,name,asProject){
 }
 async function importFile(file,asNewProject){
   try{
-    if(/\.json$/i.test(file.name)){const data=JSON.parse(await file.text());if(asNewProject)await createProject(file.name.replace(/\.json$/i,''),true,16);toast('JSON импортирован');return}
     const isGltf=/\.gltf$/i.test(file.name);
     const data=isGltf?await file.text():await file.arrayBuffer();
     const base=file.name.replace(/\.[^.]+$/,'');
@@ -1042,7 +1128,7 @@ async function importFile(file,asNewProject){
     importGltf(g,base,asNewProject&&!!(g.scene.userData&&g.scene.userData.bliss));
     updateAnimBtn();renderAll();setTime(state.cur);markDirty();
     if(state.objs.length)select(state.objs[state.objs.length-1]);
-    toast('Модель загружена');
+    toast('Модель успешно загружена');
   }catch(e){toast('Не удалось открыть файл')}
 }
 function bakeTrack(K){
@@ -1097,10 +1183,10 @@ async function exportFile(){
   try{
     const buf=await exportGLB();
     const url=URL.createObjectURL(new Blob([buf],{type:'model/gltf-binary'}));
-    const a=document.createElement('a');a.href=url;a.download=(state.name||'bliss').replace(/[\/:*?"<>|]/g,'_')+'.glb';
+    const a=document.createElement('a');a.href=url;a.download=(state.name||'bliss').replace(/[\\/:*?"<>|]/g,'_')+'.glb';
     document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
-    toast('Экспортировано');
-  }catch(e){toast('Ошибка экспорта')}
+    toast('Модель экспортирована');
+  }catch(e){toast('Не удалось экспортировать')}
 }
 function thumb(){
   try{
@@ -1118,37 +1204,36 @@ async function saveProject(silent){
   try{
     const th=thumb(),glb=await exportGLB();
     await dbPut({id:state.id,name:state.name,updated:Date.now(),thumb:th,glb,mc:!!state.mc,pixels:state.pixels||16});
-    if(!silent)toast('Сохранено');
-  }catch(e){}
+    if(!silent)toast('Проект сохранен');
+  }catch(e){if(!silent)toast('Не удалось сохранить')}
   saving=false;
 }
 function markDirty(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>saveProject(true),2000)}
 
-/* ---------- Обработчики интерфейса ---------- */
+/* События интерфейса */
 document.addEventListener('click',e=>{
   const b=e.target.closest('button');if(b)b.blur();
   if(!e.target.closest('.mw'))$('#fileMenu').classList.add('hidden');
   if(popEl&&!e.target.closest('.pop')&&performance.now()-popT>80)closePop();
 });
+
 async function newProjectFlow(){
   const n=await dlg({title:'Новый проект',input:'Новый проект',ok:'Далее'});if(!n)return;
-  const mc=confirm('Создать проект Minecraft (воксельный редактор в стиле Blockbench)?');
-  let px=16;
-  if(mc){
-    const v=await dlg({title:'Размер сетки (пикселей на блок)',text:'Например: 16 (стандарт Minecraft) или 32.',input:'16',ok:'Создать'});
-    if(!v)return;px=clamp(parseInt(v)||16,1,128);
-  }
+  const mc=confirm('Создать проект в стиле Minecraft (пиксельные кубики)?');let px=16;
+  if(mc){const v=await dlg({title:'Размер сетки',text:'Пикселей на сторону (например 16 или 32):',input:'16',ok:'Создать'});if(!v)return;px=clamp(parseInt(v)||16,1,128)}
   createProject(n,mc,px);
 }
 $('#actNew').onclick=newProjectFlow;
 let fileMode='editor';
 $('#actImp').onclick=()=>{fileMode='home';$('#fileIn').click()};
 $('#fileIn').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f)importFile(f,fileMode==='home')};
+
 $('#projGrid').onclick=async e=>{
   const del=e.target.closest('[data-del]');
-  if(del){e.stopPropagation();const ok=await dlg({title:'Удалить?',text:'Проект будет удален.',ok:'Удалить'});if(ok){await dbDel(del.dataset.del);renderHome()}return}
+  if(del){e.stopPropagation();const ok=await dlg({title:'Удалить проект?',text:'Проект будет стерт безвозвратно.',ok:'Удалить'});if(ok){await dbDel(del.dataset.del);renderHome()}return}
   const c=e.target.closest('.pcard');if(c){const r=await dbGet(c.dataset.id);if(r)openProject(r)}
 };
+
 $('#btnHome').onclick=goHome;
 $('#btnFile').onclick=e=>{e.stopPropagation();$('#fileMenu').classList.toggle('hidden')};
 $('#fileMenu').onclick=async e=>{
@@ -1156,24 +1241,58 @@ $('#fileMenu').onclick=async e=>{
   const a=b.dataset.act;
   if(a==='new'){await saveProject(true);newProjectFlow()}
   else if(a==='save')saveProject(false);
-  else if(a==='settings')showSettings();
   else if(a==='import'){fileMode='editor';$('#fileIn').click()}
   else if(a==='export')exportFile();
+  else if(a==='settings')openSettingsModal();
   else if(a==='home')goHome();
 };
+
 $('#projName').oninput=e=>{state.name=e.target.value.trim()||'Без названия';markDirty()};
-$('#modebar').onclick=e=>{const b=e.target.closest('[data-work]');if(b)updateWorkMode(b.dataset.work)};
-$('#paintColor').oninput=e=>{state.paint=e.target.value};
+$('#modebar').onclick=e=>{const b=e.target.closest('[data-work]');if(b)updateWorkModelOrPaint(b.dataset.work)};
+function updateWorkModelOrPaint(mode){updateWorkMode(mode)}
+
+$('#btnSettingsHome').onclick=openSettingsModal;
+$('#btnSettings').onclick=openSettingsModal;
+$('#stClose').onclick=()=>$('#settingsModal').classList.add('hidden');
+$('#btnThemeHome').onclick=toggleTheme;
+
+function openSettingsModal(){$('#settingsModal').classList.remove('hidden')}
+
+/* Обработчики внутри модалки настроек */
+$('#stTheme').onclick=toggleTheme;
+$('#stAnim').onclick=()=>{
+  state.settings.anim=!state.settings.anim;
+  applySettings();
+};
+$('#stGrid').onclick=()=>{
+  state.settings.grid=!state.settings.grid;
+  applySettings();
+};
+$('#stShadows').onclick=()=>{
+  state.settings.shadows=!state.settings.shadows;
+  applySettings();
+};
+
+$('#paintCustomColor').oninput=e=>{state.paint=e.target.value;renderPaintPalette()};
+$('#paintColorsList').onclick=e=>{
+  const c=e.target.closest('[data-col]');if(!c)return;
+  state.paint=c.dataset.col;renderPaintPalette();
+};
+$('#texChips').onclick=e=>{
+  const chip=e.target.closest('.tex-chip');if(!chip)return;
+  $$('#texChips .tex-chip').forEach(c=>c.classList.remove('on'));
+  chip.classList.add('on');
+  setMaterialProps(parseFloat(chip.dataset.rough),parseFloat(chip.dataset.metal));
+};
+
 $('#btnPanel').onclick=e=>{e.stopPropagation();$('#side').classList.toggle('open')};
 $('#btnFocus').onclick=()=>{const t=state.sel?state.sel.root.position:new THREE.Vector3(0,.8,0);orbit.target.copy(t)};
-function renderTiles(){
-  const kinds=state.mc?['block']:Object.keys(KINDS).filter(k=>k!=='block');
-  $('#tiles').innerHTML=kinds.map(k=>`<button class="tile" data-k="${k}">${ic(k==='block'?'cube':k,24)}${KINDS[k]}</button>`).join('')+(state.mc?`<div class="mc-note">Minecraft · сетка ${state.pixels}px</div>`:'');
-}
+
+function renderTiles(){const kinds=state.mc?['block']:Object.keys(KINDS).filter(k=>k!=='block');$('#tiles').innerHTML=kinds.map(k=>`<button class="tile" data-k="${k}">${ic(k==='block'?'cube':k,22)}${KINDS[k]}</button>`).join('')+(state.mc?`<div class="mc-note">Minecraft · ${state.pixels}px</div>`:'')}
 renderTiles();
 $('#tiles').onclick=e=>{const b=e.target.closest('[data-k]');if(b)addShape(b.dataset.k)};
 
-/* Оутлайнер */
+/* Оутлайнер слева */
 const ob=$('#objs');
 ob.onclick=e=>{
   const eye=e.target.closest('[data-eye]');
@@ -1188,27 +1307,15 @@ ob.onclick=e=>{
   if(fr){const f=state.folders.find(x=>x.id===fr.dataset.f);if(f){f.open=!f.open;renderObjs();renderTL();markDirty()}return}
   const r=e.target.closest('.orow[data-u]');if(r)select(byUid(+r.dataset.u));
 };
-ob.addEventListener('dragstart',e=>{
-  const r=e.target.closest('.orow[data-u]');if(!r)return;
-  e.dataTransfer.setData('text/plain',r.dataset.u);e.dataTransfer.effectAllowed='move';
-  setTimeout(()=>ob.classList.add('dragging'),0);
-});
-ob.addEventListener('dragend',()=>{ob.classList.remove('dragging');$$('.over',ob).forEach(x=>x.classList.remove('over'))});
-ob.addEventListener('dragover',e=>{
-  e.preventDefault();$$('.over',ob).forEach(x=>x.classList.remove('over'));
-  const t=e.target.closest('[data-f],[data-root],[data-u]');if(t)t.classList.add('over');
-});
-ob.addEventListener('drop',e=>{
-  e.preventDefault();
-  const o=byUid(+e.dataTransfer.getData('text/plain'));
-  ob.classList.remove('dragging');if(!o)return;
-  const t=e.target.closest('[data-f],[data-root],[data-u]');let fid=null;
-  if(t){if(t.dataset.f)fid=t.dataset.f;else if(t.dataset.u){const to=byUid(+t.dataset.u);fid=to?to.folder:null}}
-  moveToFolder(o,fid);
-});
 $('#btnNewFolder').onclick=createFolderDialog;
 
-/* Панель инструментов */
+/* Нижний аутлайнер для режима моделирования */
+$('#mbList').onclick=e=>{
+  const item=e.target.closest('[data-u]');if(!item)return;
+  const o=byUid(+item.dataset.u);if(o)select(o);
+};
+
+/* Панель инструментов справа */
 $('#rail').onclick=e=>{
   const b=e.target.closest('[data-m]');if(b){setMode(b.dataset.m);return}
   if(e.target.closest('#rKey'))keyHere();
@@ -1222,39 +1329,39 @@ $('#axisBar').onclick=e=>{
 /* Свойства */
 $('#props').addEventListener('input',e=>{
   const o=state.sel;if(!o)return;
-  if(e.target.id==='pName'){o.name=e.target.value||'Объект';renderObjs();renderTL();markDirty();return}
+  if(e.target.id==='pName'){o.name=e.target.value||'Объект';renderObjs();renderTL();renderModelBottom();markDirty();return}
   const i=e.target.closest('input[data-f]');if(!i)return;
   const v=parseFloat(i.value);if(isNaN(v))return;
   const k='xyz'[+i.dataset.a],f=i.dataset.f;
-  if(f==='p')o.root.position[k]=v;else if(f==='r')o.root.rotation[k]=v*DEG;else o.root.scale[k]=Math.max(.001,v);
+  if(f==='p')o.root.position[k]=v;else if(f==='r')o.root.rotation[k]=v*DEG;else o.root.scale[k]=Math.abs(v)<.001?.001:v;
   box.update();if(!o.keys.length)captureBase(o);if(state.auto)autoKey();markDirty();
 });
 $('#props').addEventListener('click',e=>{
   const o=state.sel;if(!o)return;
   const c=e.target.closest('[data-c]');if(c){setColor(o,c.dataset.c);$$('#props .sw button').forEach(b=>b.classList.toggle('on',b===c));return}
-  if(e.target.closest('#pAttach')){const items=state.objs.filter(x=>x!==o&&!isDescendant(x,o)).map(x=>({label:x.name,icon:'cube',fn:()=>attachObject(o,x)}));if(items.length)popMenu(e.target.closest('#pAttach'),items);else toast('Нет других объектов');return}
+  if(e.target.closest('#pAttach')){const items=state.objs.filter(x=>x!==o&&!isDescendant(x,o)).map(x=>({label:x.name,icon:'cube',fn:()=>attachObject(o,x)}));if(items.length)popMenu(e.target.closest('#pAttach'),items);else toast('Нет подходящих объектов');return}
   if(e.target.closest('#pDetach')){detachObject(o);return}
   if(e.target.closest('#pDup'))duplicate(o);
   if(e.target.closest('#pDel'))removeObj(o);
 });
 
-/* Таймлайн транспорт */
+/* Транспорт таймлайна */
 $('#bAnim').onclick=e=>animMenu(e.currentTarget);
 $('#bPlay').onclick=()=>state.playing?pause():play();
 $('#bStart').onclick=()=>{pause();setTime(0);$('#tlScroll').scrollLeft=0};
 $('#bLoop').onclick=e=>{state.loop=!state.loop;e.currentTarget.classList.toggle('on',state.loop)};
-$('#bAuto').onclick=e=>{state.auto=!state.auto;e.currentTarget.classList.toggle('on',state.auto)};
+$('#bAuto').onclick=e=>{state.auto=!state.auto;e.currentTarget.classList.toggle('on',state.auto);if(state.auto)toast('Автоключ включен')};
 $('#bEase').onclick=e=>{state.smooth=!state.smooth;e.currentTarget.classList.toggle('on',state.smooth);e.currentTarget.textContent=state.smooth?'Плавно':'Линейно';applyTime(state.cur);markDirty()};
 $('#bKey').onclick=keyHere;
-$('#bDelKey').onclick=()=>{if(!deleteKey())toast('Выберите ключ')};
+$('#bDelKey').onclick=()=>{if(!deleteKey())toast('Выберите ключ на таймлайне')};
 $('#frameIn').onchange=e=>{pause();setTime(parseInt(e.target.value)||0)};
 $('#endIn').onchange=e=>{state.end=clamp(parseInt(e.target.value)||120,1,1200);curAnim().end=state.end;e.target.value=state.end;if(state.cur>state.end)setTime(state.end);renderTL();markDirty()};
 const zoom=m=>{state.ppf=clamp(state.ppf*m,3,40);renderTL()};
 $('#bZin').onclick=()=>zoom(1.3);$('#bZout').onclick=()=>zoom(1/1.3);
 
-/* Клавиатура */
+/* Горячие клавиши */
 document.addEventListener('keydown',e=>{
-  if(!editorOn||!$('#scrim').classList.contains('hidden'))return;
+  if(!editorOn||!$('#scrim').classList.contains('hidden')||!$('#settingsModal').classList.contains('hidden'))return;
   const t=e.target.tagName;if(t==='INPUT'||t==='TEXTAREA'||t==='SELECT')return;
   const k=e.key.toLowerCase();
   if((e.ctrlKey||e.metaKey)&&k==='s'){e.preventDefault();saveProject(false);return}
@@ -1264,20 +1371,23 @@ document.addEventListener('keydown',e=>{
   else if(k==='r')setMode('rotate');
   else if(k==='s')setMode('scale');
   else if(k==='i')keyHere();
-  else if(k==='d'&&e.shiftKey&&state.sel)duplicate(state.sel);
   else if(k==='delete'||k==='backspace'||k==='x'){if(!deleteKey()&&state.sel)removeObj(state.sel)}
   else if(k==='arrowright'){pause();setTime(Math.round(state.cur)+1)}
   else if(k==='arrowleft'){pause();setTime(Math.round(state.cur)-1)}
   else if(k==='home'){pause();setTime(0)}
   else if(k==='escape'){closePop();select(null)}
 });
+
 addEventListener('resize',()=>{setNW();resize();if(editorOn)renderTL()});
 document.addEventListener('visibilitychange',()=>{if(document.hidden&&editorOn&&state.id)saveProject(true)});
 
-/* Старт */
+/* Инициализация */
 hydrate(document);
 setPlayIcon('play');
 initDecor();setNW();renderHome();
+renderPaintPalette();
+applySettings();
+
 })();
 </script>
 </body>
