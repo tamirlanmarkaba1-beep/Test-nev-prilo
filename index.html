@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Bliss</title>
+<title>Bliss Studio</title>
 <meta name="color-scheme" content="dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -279,6 +279,8 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacin
         <button class="mi" data-act="new" data-ic="plus">Новый проект</button>
         <button class="mi" data-act="save" data-ic="save">Сохранить<small>Ctrl+S</small></button>
         <div class="div"></div>
+        <button class="mi" data-act="settings" data-ic="settings">Настройки</button>
+        <div class="div"></div>
         <button class="mi" data-act="import" data-ic="import">Импорт модели<small>.glb .gltf .json</small></button>
         <button class="mi" data-act="export" data-ic="export">Экспорт модели<small>.glb с анимациями</small></button>
         <div class="div"></div>
@@ -362,6 +364,7 @@ h1{font-size:clamp(34px,6vw,56px);line-height:1.05;font-weight:800;letter-spacin
 <script>
 (()=>{
 'use strict';
+const coarse = window.matchMedia('(pointer: coarse)').matches;
 const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -371,6 +374,7 @@ const DEG=Math.PI/180, PAD=14;
 const P={
 plus:'<path d="M12 5v14M5 12h14"/>',
 file:'<path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/>',
+settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
 import:'<path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19.5h14"/>',
 export:'<path d="M12 15V4"/><path d="M7.5 8.5L12 4l4.5 4.5"/><path d="M5 19.5h14"/>',
 play:'<path d="M8 5.7v12.6a.6.6 0 0 0 .9.5l10.2-6.3a.6.6 0 0 0 0-1L8.9 5.2a.6.6 0 0 0-.9.5z" fill="currentColor"/>',
@@ -459,6 +463,26 @@ function dlg({title,text='',input,ok='ОК',cancel='Отмена'}){
     sc.onclick=e=>{if(e.target===sc)fin(null)};
     di.onkeydown=e=>{if(e.key==='Enter')$('#dK').click();if(e.key==='Escape')fin(null)};
   });
+}
+async function showSettings(){
+  const mcState = state.mc ? 'Вкл' : 'Выкл';
+  const pxVal = state.pixels;
+  const res = await dlg({
+    title: 'Настройки проекта',
+    text: `Режим Minecraft (воксельный сетка): ${mcState}\nПлотность сетки: ${pxVal} пикселей на блок\n\nХотите изменить режим вокселей для текущего проекта?`,
+    ok: 'Изменить',
+    cancel: 'Закрыть'
+  });
+  if(res){
+    state.mc = !state.mc;
+    if(state.mc){
+      const p = await dlg({title: 'Сетка вокселей', text: 'Укажите размер сетки (например, 16 или 32):', input: String(state.pixels), ok: 'Готово'});
+      if(p) state.pixels = clamp(parseInt(p)||16, 1, 128);
+    }
+    renderTiles();
+    toast(state.mc ? `Воксельный режим Minecraft включен (${state.pixels}px)` : 'Стандартный 3D-режим включен');
+    markDirty();
+  }
 }
 let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800)}
 let popEl=null,popT=0;
@@ -1135,6 +1159,7 @@ $('#fileMenu').onclick=async e=>{
   const a=b.dataset.act;
   if(a==='new'){await saveProject(true);newProjectFlow()}
   else if(a==='save')saveProject(false);
+  else if(a==='settings')showSettings();
   else if(a==='import'){fileMode='editor';$('#fileIn').click()}
   else if(a==='export')exportFile();
   else if(a==='home')goHome();
