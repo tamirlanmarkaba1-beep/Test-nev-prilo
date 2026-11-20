@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BlissChat — Вход через Google</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-dark: #0e1c1b;
+      --bg-wave: #113a36;
+      --surface: #1b2827;
+      --surface-variant: #253635;
+      --primary: #80d5c9;
+      --on-primary: #003732;
+      --text-main: #e3eceb;
+      --text-muted: #9eb3b0;
+      --outline: #52736f;
+      --error: #ffb4ab;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Фоновые волны в стиле экрана входа BlissChat */
+    .wave-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 400px;
+      background: rgba(20, 36, 35, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(128, 213, 201, 0.16);
+      border-radius: 32px;
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    /* Волнистый бейдж логотипа Material You */
+    .logo-badge {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 20px;
+      background: #134e48;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(-6deg);
+    }
+
+    .logo-badge svg {
+      width: 46px;
+      height: 46px;
+      transform: rotate(6deg);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      line-height: 1.4;
+    }
+
+    .btn-google {
+      width: 100%;
+      height: 54px;
+      border-radius: 27px;
+      border: 1.5px solid var(--outline);
+      background: var(--surface);
+      color: var(--text-main);
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .btn-google:hover {
+      background: var(--surface-variant);
+      border-color: var(--primary);
+    }
+
+    .btn-google:active {
+      transform: scale(0.98);
+    }
+
+    .btn-google:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      width: 100%;
+      height: 52px;
+      margin-top: 14px;
+      border-radius: 26px;
+      border: none;
+      background: var(--primary);
+      color: var(--on-primary);
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+    }
+
+    .status {
+      margin-top: 18px;
+      font-size: 14px;
+      font-weight: 600;
+      min-height: 20px;
+      color: var(--text-muted);
+      word-break: break-word;
+    }
+
+    .status.error {
+      color: var(--error);
+    }
+
+    .status.ok {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <svg class="wave-bg" viewBox="0 0 400 800" preserveAspectRatio="none">
+    <path d="M0,180 C130,110 260,260 400,190 L400,800 L0,800 Z" fill="#113a36" opacity="0.75" />
+    <path d="M0,460 C160,390 250,560 400,480 L400,800 L0,800 Z" fill="#0c2624" opacity="0.9" />
+  </svg>
+
+  <main class="card">
+    <div class="logo-badge" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none">
+        <rect x="8" y="10" width="22" height="16" rx="4" fill="#80d5c9" />
+        <path d="M12 26L8 31V24H14L12 26Z" fill="#80d5c9" />
+        <path d="M32 17H36C38.2 17 40 18.8 40 21V31C40 33.2 38.2 35 36 35H34V40L28 35H20C17.8 35 16 33.2 16 31V29" stroke="#80d5c9" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+
+    <h1>Добро пожаловать</h1>
+    <p class="subtitle">Войдите через Google, чтобы вернуться в BlissChat</p>
+
+    <button id="googleBtn" class="btn-google" type="button">
+      <svg width="20" height="20" viewBox="0 0 24 24">
+        <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.8C6.2 7.2 8.9 5 12 5z"/>
+        <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.5H12v4.8h6.5c-.3 1.5-1.1 2.8-2.4 3.6l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/>
+        <path fill="#FBBC05" d="M5.3 14.8c-.2-.8-.4-1.6-.4-2.5s.2-1.7.4-2.5L1.6 7C.6 9 0 11.2 0 13.5s.6 4.5 1.6 6.5l3.7-2.9z"/>
+        <path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5l-3.7 2.8C3.5 21.1 7.4 24 12 24z"/>
+      </svg>
+      <span>Продолжить с Google</span>
+    </button>
+
+    <a id="openAppBtn" class="btn-primary" href="#">Открыть BlissChat</a>
+    <div id="status" class="status"></div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBUXc71LMSwk0Nb82bieZFZbGeMtJ5uU2s",
+      authDomain: "bitrate-71684.firebaseapp.com",
+      projectId: "bitrate-71684",
+      storageBucket: "bitrate-71684.firebasestorage.app",
+      messagingSenderId: "794345122154",
+      appId: "1:794345122154:web:05b6f2241d89652b895d13"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+
+    const btn = document.getElementById("googleBtn");
+    const openAppBtn = document.getElementById("openAppBtn");
+    const statusEl = document.getElementById("status");
+
+    function setStatus(text, type = "") {
+      statusEl.textContent = text;
+      statusEl.className = "status " + type;
+    }
+
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      setStatus("Открываем окно выбора аккаунта...");
+
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const idToken = credential?.idToken || await result.user.getIdToken();
+
+        const deepLink = `blisschat://auth?idToken=${encodeURIComponent(idToken)}`;
+        openAppBtn.href = deepLink;
+        openAppBtn.style.display = "flex";
+
+        setStatus(`Вы вошли как ${result.user.email}. Возвращаем в приложение...`, "ok");
+        window.location.href = deepLink;
+      } catch (err) {
+        console.error(err);
+        setStatus(`Ошибка входа: ${err.code || err.message}`, "error");
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
